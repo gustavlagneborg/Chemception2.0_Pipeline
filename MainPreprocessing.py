@@ -5,8 +5,8 @@ from sklearn.model_selection import train_test_split
 
 random_state = 125
 
-train_file_exists = os.path.exists('data/df_train_preprocessed.csv')
-test_file_exists = os.path.exists('data/df_test_preprocessed.csv')
+train_file_exists = os.path.exists('Data/df_train_preprocessed.csv')
+test_file_exists = os.path.exists('Data/df_test_preprocessed.csv')
 
 if (train_file_exists == False and test_file_exists == False):
     # get dataset
@@ -82,39 +82,60 @@ df_inactives_test = testing_data.loc[(testing_data['HIV_active'] == 0)].reset_in
 df_actives_test = testing_data.loc[(testing_data['HIV_active'] == 1)].reset_index(drop=True)
 
 # --------MolImages--------
-# creating list of RDKit mol objects for inactive and active compounds
-inactivesList_train = getMolListFromDataFrame(df_inactives_train, "MolName")
-activesList_train = getMolListFromDataFrame(df_actives_train, "MolName")
+for fname in os.listdir('Images/MolFromSmilesImages/Train'):
+    if fname.endswith('.png'):
+        # do stuff on the file
+        print("png files already exists in specified path")
+        break
+else:
 
-inactivesList_test = getMolListFromDataFrame(df_inactives_test, "MolName")
-activesList_test = getMolListFromDataFrame(df_actives_test, "MolName")
+        # do stuff if a file .true doesn't exist.
+    print("Starting to produce molecular images!")
+    # creating list of RDKit mol objects for inactive and active compounds
+    inactivesList_train = getMolListFromDataFrame(df_inactives_train, "MolName")
+    activesList_train = getMolListFromDataFrame(df_actives_train, "MolName")
 
-# train images
-produceMolImages(path="Images/MolFromSmilesImages/Train/", compoundList=inactivesList_train, HIV_activity="inactive")
-produceMolImages(path="Images/MolFromSmilesImages/Train/", compoundList=activesList_train, HIV_activity="active")
+    inactivesList_test = getMolListFromDataFrame(df_inactives_test, "MolName")
+    activesList_test = getMolListFromDataFrame(df_actives_test, "MolName")
 
-# test images
-produceMolImages(path="Images/MolFromSmilesImages/Test/", compoundList=inactivesList_test, HIV_activity="inactive")
-produceMolImages(path="Images/MolFromSmilesImages/Test/", compoundList=activesList_test, HIV_activity="active")
+    # train images
+    produceMolImages(path="Images/MolFromSmilesImages/Train/", compoundList=inactivesList_train, HIV_activity="inactive")
+    produceMolImages(path="Images/MolFromSmilesImages/Train/", compoundList=activesList_train, HIV_activity="active")
+
+    # test images
+    produceMolImages(path="Images/MolFromSmilesImages/Test/", compoundList=inactivesList_test, HIV_activity="inactive")
+    produceMolImages(path="Images/MolFromSmilesImages/Test/", compoundList=activesList_test, HIV_activity="active")
 
 # --------SmilesImages--------
 # uses smiles to produce images
+for fname in os.listdir('Images/SmilesImages/Train'):
+    if fname.endswith('.png'):
+        # do stuff on the file
+        print("png files already exists in specified path")
+        break
+else:
 
-# train images
-generateImageSMILE(path="Images/SmilesImages/Train/", compoundList=df_inactives_train, HIV_activity="inactive")
-generateImageSMILE(path="Images/SmilesImages/Train/", compoundList=df_actives_train, HIV_activity="active")
+    # train images
+    generateImageSMILE(path="Images/SmilesImages/Train/", compoundList=df_inactives_train, HIV_activity="inactive")
+    generateImageSMILE(path="Images/SmilesImages/Train/", compoundList=df_actives_train, HIV_activity="active")
 
-# test images
-generateImageSMILE(path="Images/SmilesImages/Test/", compoundList=df_inactives_test, HIV_activity="inactive")
-generateImageSMILE(path="Images/SmilesImages/Test/", compoundList=df_actives_test, HIV_activity="active")
+    # test images
+    generateImageSMILE(path="Images/SmilesImages/Test/", compoundList=df_inactives_test, HIV_activity="inactive")
+    generateImageSMILE(path="Images/SmilesImages/Test/", compoundList=df_actives_test, HIV_activity="active")
 
 # --------SmilesColorImages--------
 # uses smiles to produce images
+for fname in os.listdir('Images/SmilesColorImages/Train'):
+    if fname.endswith('.png'):
+        # do stuff on the file
+        print("png files already exists in specified path")
+        break
+else:
 
-# train images
-generateImageSMILEColor(path="Images/SmilesColorImages/Train/", compoundList=df_inactives_train, HIV_activity="inactive", withChars=False)
-generateImageSMILEColor(path="Images/SmilesColorImages/Train/", compoundList=df_actives_train, HIV_activity="active", withChars=False)
+    # train images
+    generateImageSMILEColor(path="Images/SmilesColorImages/Train/", compoundList=df_inactives_train, HIV_activity="inactive", withChars=False)
+    generateImageSMILEColor(path="Images/SmilesColorImages/Train/", compoundList=df_actives_train, HIV_activity="active", withChars=False)
 
-# test images
-generateImageSMILEColor(path="Images/SmilesColorImages/Test/", compoundList=df_inactives_test, HIV_activity="inactive", withChars=False)
-generateImageSMILEColor(path="Images/SmilesColorImages/Test/", compoundList=df_actives_test, HIV_activity="active", withChars=False)
+    # test images
+    generateImageSMILEColor(path="Images/SmilesColorImages/Test/", compoundList=df_inactives_test, HIV_activity="inactive", withChars=False)
+    generateImageSMILEColor(path="Images/SmilesColorImages/Test/", compoundList=df_actives_test, HIV_activity="active", withChars=False)
