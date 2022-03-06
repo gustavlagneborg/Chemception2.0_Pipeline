@@ -11,4 +11,5 @@
 *.csv
 */Images/*
 */data/*
-
+Images/*
+data/*

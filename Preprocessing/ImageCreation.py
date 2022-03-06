@@ -42,7 +42,7 @@ def produceMolImages(path, compoundList, HIV_activity):
         counter += 1
         Chem.Draw.MolToFile(active, filename, size=(200,150))#, kekulize=True, wedgeBonds=True, imageType=None, fitImage=False, options=None)
     
-    print(f"Done producing molImages {HIV_activity} compounds for path: {path}")
+    print(f"Done producing molImages {HIV_activity} compounds for path: {path}. {counter} images was created")
     
 
 # Smiles Image setup
@@ -80,13 +80,11 @@ look_ahead = {
 }
 
 
-
-
 skip = ["@", "[", "]"]
 
 
 def colorSMILES(smi):
-    max_nested = 5
+    max_nested = 10
     max_connections = 10
     width = 12 
     height = 18
@@ -259,7 +257,7 @@ def generateImageSMILE(path, compoundList, HIV_activity):
 
         img.save(fp=filename)
 
-    print(f"Done producing smilesImages {HIV_activity} compounds for path: {path}")
+    print(f"Done producing smilesImages {HIV_activity} compounds for path: {path}. {counter} images was created")
 
 # --------SmilesColorImages--------
 def generateImageSMILEColor(path, compoundList, HIV_activity, withChars=True):
@@ -281,4 +279,4 @@ def generateImageSMILEColor(path, compoundList, HIV_activity, withChars=True):
         else:
             bg.save(fp=filename)
     
-    print(f"Done producing smilesColorImages {HIV_activity} compounds for path: {path}")
+    print(f"Done producing smilesColorImages {HIV_activity} compounds for path: {path}. {counter} images was created")
