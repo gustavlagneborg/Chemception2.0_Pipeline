@@ -10,6 +10,6 @@
 *.png
 *.csv
 */Images/**
-*/data/**
+data/**
 Images/
 data/
