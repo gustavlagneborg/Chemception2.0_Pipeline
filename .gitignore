@@ -7,9 +7,5 @@
 /dataSources/
 /dataSources.local.xml
 # Custom ignored files
-*.png
-*.csv
-*/Images/**
-data/**
 Images/
 data/
