@@ -131,7 +131,6 @@ for fname in os.listdir('Images/SmilesColorImages/Train'):
         print("png files already exists in specified path")
         break
 else:
-
     # train images
     generateImageSMILEColor(path="Images/SmilesColorImages/Train/", compoundList=df_inactives_train, HIV_activity="inactive", withChars=False)
     generateImageSMILEColor(path="Images/SmilesColorImages/Train/", compoundList=df_actives_train, HIV_activity="active", withChars=False)

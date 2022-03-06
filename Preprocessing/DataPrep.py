@@ -118,3 +118,6 @@ def oversample(df, feature):
     df_oversampled = df_oversampled.reset_index(drop=True)
     
     return df_oversampled
+
+def tensorData():
+    pass

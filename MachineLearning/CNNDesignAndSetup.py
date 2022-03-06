@@ -8,6 +8,8 @@ from keras.layers.pooling import GlobalAveragePooling2D, MaxPooling2D
 from keras.optimizers import Adam, Nadam, RMSprop, SGD
 from keras.regularizers import l2, l1, l1_l2
 from keras import backend as K
+import keras
+
 
 def conv2d_bn(x, nb_filter, kernel_size=4, padding='same', strides=2):
 
@@ -277,4 +279,26 @@ def cs_setup_cnn(params, inshape=None, classes=None):
         raise("ERROR in specifying tasktype")
     
     return(model, submodel)
+
+
+# Chemception tutorial for test
+# https://www.cheminformania.com/learn-how-to-teach-your-computer-to-see-chemistry-free-chemception-models-with-rdkit-and-keras/
+def Inception0(input):
+    tower_1 = Conv2D(16, (1, 1), padding='same', activation='relu')(input)
+    tower_1 = Conv2D(16, (3, 3), padding='same', activation='relu')(tower_1)
+    tower_2 = Conv2D(16, (1, 1), padding='same', activation='relu')(input)
+    tower_2 = Conv2D(16, (5, 5), padding='same', activation='relu')(tower_2)
+    tower_3 = Conv2D(16, (1, 1), padding='same', activation='relu')(input)
+    output = keras.layers.concatenate([tower_1, tower_2, tower_3], axis=-1)
+    return output
+
+def Inception(input):
+    tower_1 = Conv2D(16, (1, 1), padding='same', activation='relu')(input)
+    tower_1 = Conv2D(16, (3, 3), padding='same', activation='relu')(tower_1)
+    tower_2 = Conv2D(16, (1, 1), padding='same', activation='relu')(input)
+    tower_2 = Conv2D(16, (5, 5), padding='same', activation='relu')(tower_2)
+    tower_3 = MaxPooling2D((3, 3), strides=(1, 1), padding='same')(input)
+    tower_3 = Conv2D(16, (1, 1), padding='same', activation='relu')(tower_3)
+    output = keras.layers.concatenate([tower_1, tower_2, tower_3], axis=-1)
+    return output
 
