@@ -9,7 +9,7 @@
 # Custom ignored files
 *.png
 *.csv
-*/Images/*
-*/data/*
+*/Images/**
+*/data/**
 Images/
 data/
