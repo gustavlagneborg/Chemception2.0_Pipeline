@@ -240,7 +240,7 @@ def cs_setup_cnn(params, inshape=None, classes=None):
 
     # Inception Resnet B
     for i in range(params['num_block2']):
-        last_params = int(params['conv1_units']+(params['conv3_units']*3))
+        last_params = int(params['conv1_unitFs']+(params['conv3_units']*3))
         x = inception_resnet_v2_B(x, params['conv4_units'], last_params, scale_residual=False)
 
     # Reduction Resnet B
