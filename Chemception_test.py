@@ -125,7 +125,7 @@ else:
 
         history = model.fit_generator(g,
                                 steps_per_epoch=len(X_train_cv)//batch_size,
-                                epochs=2,
+                                epochs=50,
                                 validation_data=(X_valid_cv, y_valid_cv),
                                 callbacks=[reduce_lr])
 
