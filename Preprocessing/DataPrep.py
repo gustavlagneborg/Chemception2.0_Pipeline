@@ -5,6 +5,13 @@ from rdkit.Chem import rdDepictor
 rdDepictor.SetPreferCoordGen(True)
 from rdkit.Chem.Descriptors import MolWt,NumRotatableBonds,HeavyAtomCount
 from collections import Counter
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+import cv2
+from tqdm import tqdm
+import random
+import pickle
 
 from tdc.single_pred import HTS
 from tqdm import tqdm
@@ -119,5 +126,41 @@ def oversample(df, feature):
     
     return df_oversampled
 
-def tensorData():
-    pass
+def tensorDataPrep(loadPath, savePath, testOrTrain):
+    data = []
+    # creata train and test data
+    for img in os.listdir(loadPath)[:10]:
+        img_array = cv2.imread(os.path.join(loadPath + img))
+        img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)
+        if "inactive" in img:
+            label=0
+        else:
+            label=1
+        data.append([img_array, label])
+
+    # shuffle the data
+    random.shuffle(data)
+
+    # reshape and/or convert to numpy
+    X = []
+    y = []
+
+    for features,label in data:
+        X.append(features)
+        y.append(label)
+    
+    X = np.asarray(X)
+    y = np.asarray(y).reshape(-1,1)
+
+    # Save
+    pickle_out_X = open(savePath + "/X_" + testOrTrain + ".pickle","wb")
+    pickle.dump(X, pickle_out_X)
+    pickle_out_X.close()
+
+    pickle_out_y = open(savePath + "/y_" + testOrTrain + ".pickle","wb")
+    pickle.dump(y, pickle_out_y)
+    pickle_out_y.close()
+
+    return X, y
+
+

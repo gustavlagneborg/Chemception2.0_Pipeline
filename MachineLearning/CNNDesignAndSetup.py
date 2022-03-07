@@ -5,7 +5,7 @@ from keras.layers.advanced_activations import PReLU, LeakyReLU, ELU
 from keras.layers.core import Lambda
 from keras.layers.convolutional import Conv1D, Conv2D
 from keras.layers.pooling import GlobalAveragePooling2D, MaxPooling2D
-from keras.optimizers import Adam, Nadam, RMSprop, SGD
+from tensorflow.keras.optimizers import Adam, RMSprop, SGD
 from keras.regularizers import l2, l1, l1_l2
 from keras import backend as K
 import keras
