@@ -111,7 +111,6 @@ else:
 
         optimizer = Adam(lr=0.00025)
         model.compile(loss="binary_crossentropy", optimizer=optimizer, metrics=["accuracy"])
-        tf.config.run_functions_eagerly(True)
 
         generator = ImageDataGenerator(rotation_range=180,
                                 width_shift_range=0.1, height_shift_range=0.1,

@@ -10,13 +10,16 @@ from keras.regularizers import l2, l1, l1_l2
 from keras import backend as K
 import keras
 
+K.set_image_data_format('channels_first')
 
 def conv2d_bn(x, nb_filter, kernel_size=4, padding='same', strides=2):
 
-    if K.image_dim_ordering() == "th":
+    """    if K.image_dim_ordering() == "th":
         channel_axis = 1
     else:
-        channel_axis = -1
+        """
+    
+    channel_axis = -1
         
     x = Conv2D(nb_filter, kernel_size=(kernel_size,kernel_size), strides=(strides,strides), padding=padding)(x)
     x = Activation("relu")(x)
@@ -24,13 +27,12 @@ def conv2d_bn(x, nb_filter, kernel_size=4, padding='same', strides=2):
     return x
 
 
-# In[ ]:
-
 def inception_resnet_v2_A(input_tensor, nb_params, last_params, scale_residual=False):
-    if K.image_dim_ordering() == "th":
+    """if K.image_dim_ordering() == "th":
         channel_axis = 1
-    else:
-        channel_axis = -1
+    else:"""
+
+    channel_axis = -1
 
     # Input is relu activation
     init = input_tensor
@@ -55,13 +57,12 @@ def inception_resnet_v2_A(input_tensor, nb_params, last_params, scale_residual=F
     return out
 
 
-# In[ ]:
-
 def inception_resnet_v2_B(input_tensor, nb_params, last_params, scale_residual=False):
-    if K.image_dim_ordering() == "th":
+    """if K.image_dim_ordering() == "th":
         channel_axis = 1
-    else:
-        channel_axis = -1
+    else:"""
+
+    channel_axis = -1
 
     # Input is relu activation
     init = input_tensor
@@ -83,13 +84,12 @@ def inception_resnet_v2_B(input_tensor, nb_params, last_params, scale_residual=F
     return out
 
 
-# In[ ]:
-
 def inception_resnet_v2_C(input_tensor, nb_params, last_params, scale_residual=False):
-    if K.image_dim_ordering() == "th":
+    """if K.image_dim_ordering() == "th":
         channel_axis = 1
-    else:
-        channel_axis = -1
+    else:"""
+
+    channel_axis = -1
 
     # Input is relu activation
     init = input_tensor
@@ -111,13 +111,12 @@ def inception_resnet_v2_C(input_tensor, nb_params, last_params, scale_residual=F
     return out
 
 
-# In[ ]:
-
 def reduction_A(input_tensor, nb_params):
-    if K.image_dim_ordering() == "th":
+    """if K.image_dim_ordering() == "th":
         channel_axis = 1
-    else:
-        channel_axis = -1
+    else:"""
+
+    channel_axis = -1
 
     r1 = MaxPooling2D((3,3), padding='valid', strides=(2,2))(input_tensor)
 
@@ -133,13 +132,12 @@ def reduction_A(input_tensor, nb_params):
     return m
 
 
-# In[ ]:
-
 def reduction_resnet_v2_B(input_tensor, nb_params):
-    if K.image_dim_ordering() == "th":
+    """if K.image_dim_ordering() == "th":
         channel_axis = 1
-    else:
-        channel_axis = -1
+    else:"""
+
+    channel_axis = -1
 
     r1 = MaxPooling2D((3,3), padding='valid', strides=(2,2))(input_tensor)
 
@@ -158,9 +156,6 @@ def reduction_resnet_v2_B(input_tensor, nb_params):
     
     return m
 
-
-# In[ ]:
-
 def end_block_droppool(input_tensor, dropval):
         
     x = GlobalAveragePooling2D(data_format="channels_last", name="final_pool")(input_tensor)
@@ -169,16 +164,12 @@ def end_block_droppool(input_tensor, dropval):
     return(input_tensor, x)
 
 
-# In[ ]:
-
 def end_block_pool(input_tensor):
     
     x = GlobalAveragePooling2D(data_format="channels_last", name="final_pool")(input_tensor)
     
     return(input_tensor, x)
 
-
-# In[ ]:
 
 def cs_setup_cnn(params, inshape=None, classes=None):
     """Instantiate the Inception v3 architecture,
@@ -220,14 +211,16 @@ def cs_setup_cnn(params, inshape=None, classes=None):
     #Clear GPU memory
     K.clear_session()
        
-    if K.image_dim_ordering() == 'th':
+    """if K.image_dim_ordering() == 'th':
         channel_axis = 1
     else:
-        channel_axis = -1
+        """
+
+    channel_axis = -1
     print("Channel axis is "+str(channel_axis))
         
     # Assign image input
-    inlayer = Input(inshape)
+    inlayer = Input(shape=inshape)
     x = conv2d_bn(inlayer, params['conv1_units'], kernel_size=4, strides=2)
 
     # Inception Resnet A
