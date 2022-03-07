@@ -9,6 +9,8 @@
 # Custom ignored files
 *.csv
 *.tab
+*.png
+*.pickle
 Images/*/Test/*
 Images/*/Train/*
 Data/*/*
