@@ -129,7 +129,7 @@ def oversample(df, feature):
 def tensorDataPrep(loadPath, savePath, testOrTrain):
     data = []
     # creata train and test data
-    for img in os.listdir(loadPath)[:1000]:
+    for img in os.listdir(loadPath)[:20000]:
         img_array = cv2.imread(os.path.join(loadPath + img))
         img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)
         if "inactive" in img:
@@ -139,26 +139,6 @@ def tensorDataPrep(loadPath, savePath, testOrTrain):
         data.append([img_array, label])
 
     data = pd.DataFrame(data)
-
-    # reshape and/or convert to numpy
-    """X = []
-    y = []
-
-    for features,label in data:
-        X.append(features)
-        y.append(label)
-    
-    X = np.asarray(X)
-    y = np.asarray(y).reshape(-1,1)
-
-    # Save
-    pickle_out_X = open(savePath + "/X_" + testOrTrain + ".pickle","wb")
-    pickle.dump(X, pickle_out_X)
-    pickle_out_X.close()
-
-    pickle_out_y = open(savePath + "/y_" + testOrTrain + ".pickle","wb")
-    pickle.dump(y, pickle_out_y)
-    pickle_out_y.close()"""
 
     pickle_out = open(savePath + "/" + testOrTrain + "Data" + ".pickle","wb")
     pickle.dump(data, pickle_out)

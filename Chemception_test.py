@@ -97,6 +97,7 @@ else:
         X_valid_cv = np.asarray(X_train_and_valid[test])
         y_valid_cv = np.asarray(y_train_and_valid[test]).reshape(-1,1)
         
+        # Building the model
         input_img = Input(shape=input_shape)
         x = Inception0(input_img)
         x = Inception(x)
@@ -129,7 +130,6 @@ else:
                                 validation_data=(X_valid_cv, y_valid_cv),
                                 callbacks=[reduce_lr])
 
-        
         # train predictions
         train_y_pred_cv = model.predict(X_train_cv)
         train_y_pred_cv = np.round(train_y_pred_cv)
