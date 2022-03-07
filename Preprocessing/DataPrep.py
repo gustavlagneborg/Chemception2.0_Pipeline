@@ -138,11 +138,10 @@ def tensorDataPrep(loadPath, savePath, testOrTrain):
             label=1
         data.append([img_array, label])
 
-    # shuffle the data
-    random.shuffle(data)
+    data = pd.DataFrame(data)
 
     # reshape and/or convert to numpy
-    X = []
+    """X = []
     y = []
 
     for features,label in data:
@@ -159,8 +158,12 @@ def tensorDataPrep(loadPath, savePath, testOrTrain):
 
     pickle_out_y = open(savePath + "/y_" + testOrTrain + ".pickle","wb")
     pickle.dump(y, pickle_out_y)
-    pickle_out_y.close()
+    pickle_out_y.close()"""
 
-    return X, y
+    pickle_out = open(savePath + "/" + testOrTrain + "Data" + ".pickle","wb")
+    pickle.dump(data, pickle_out)
+    pickle_out.close()
+
+    return data # X, y
 
 
