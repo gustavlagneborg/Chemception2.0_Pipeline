@@ -10,16 +10,16 @@ from keras.regularizers import l2, l1, l1_l2
 from keras import backend as K
 import keras
 
-K.set_image_data_format('channels_first')
+#K.set_image_data_format('channels_first')
+channel_axis = -1
 
 def conv2d_bn(x, nb_filter, kernel_size=4, padding='same', strides=2):
 
     """    if K.image_dim_ordering() == "th":
         channel_axis = 1
     else:
-        """
+        channel_axis = -1"""
     
-    channel_axis = -1
         
     x = Conv2D(nb_filter, kernel_size=(kernel_size,kernel_size), strides=(strides,strides), padding=padding)(x)
     x = Activation("relu")(x)
@@ -30,9 +30,9 @@ def conv2d_bn(x, nb_filter, kernel_size=4, padding='same', strides=2):
 def inception_resnet_v2_A(input_tensor, nb_params, last_params, scale_residual=False):
     """if K.image_dim_ordering() == "th":
         channel_axis = 1
-    else:"""
+    else:
+        channel_axis = -1"""
 
-    channel_axis = -1
 
     # Input is relu activation
     init = input_tensor
@@ -42,11 +42,18 @@ def inception_resnet_v2_A(input_tensor, nb_params, last_params, scale_residual=F
     ir2 = Conv2D(nb_params, kernel_size=(1,1), activation='relu', padding='same')(input_tensor)
     ir2 = Conv2D(nb_params, kernel_size=(3,3), activation='relu', padding='same')(ir2)
 
+    
     ir3 = Conv2D(nb_params, kernel_size=(1,1), activation='relu', padding='same')(input_tensor)
+
+    #egen
+    #ir3 = Conv2D(nb_params, kernel_size=(3,3), activation='relu', padding='same')(ir3)
+
+    #deras
     ir3 = Conv2D(int(nb_params*1.5), kernel_size=(3,3), activation='relu', padding='same')(ir3)
     ir3 = Conv2D(int(nb_params*2.0), kernel_size=(3,3), activation='relu', padding='same')(ir3)
 
-    ir_merge = concatenate([ir1, ir2, ir3], axis=channel_axis)
+
+    ir_merge = keras.layers.concatenate([ir1, ir2, ir3], axis=channel_axis)
 
     ir_conv = Conv2D(last_params, kernel_size=(1,1), activation='linear', padding='same')(ir_merge)
     if scale_residual: ir_conv = Lambda(lambda x: x * 0.1)(ir_conv)
@@ -60,9 +67,8 @@ def inception_resnet_v2_A(input_tensor, nb_params, last_params, scale_residual=F
 def inception_resnet_v2_B(input_tensor, nb_params, last_params, scale_residual=False):
     """if K.image_dim_ordering() == "th":
         channel_axis = 1
-    else:"""
-
-    channel_axis = -1
+    else:
+        channel_axis = -1"""
 
     # Input is relu activation
     init = input_tensor
@@ -73,7 +79,7 @@ def inception_resnet_v2_B(input_tensor, nb_params, last_params, scale_residual=F
     ir2 = Conv2D(int(nb_params*1.25), kernel_size=(1,7), activation='relu', padding='same')(ir2)
     ir2 = Conv2D(int(nb_params*1.50), kernel_size=(7,1), activation='relu', padding='same')(ir2)
 
-    ir_merge = concatenate([ir1, ir2], axis=channel_axis)
+    ir_merge = keras.layers.concatenate([ir1, ir2], axis=channel_axis)
 
     ir_conv = Conv2D(last_params, kernel_size=(1,1), activation='linear', padding='same')(ir_merge)
     if scale_residual: ir_conv = Lambda(lambda x: x * 0.1)(ir_conv)
@@ -87,9 +93,9 @@ def inception_resnet_v2_B(input_tensor, nb_params, last_params, scale_residual=F
 def inception_resnet_v2_C(input_tensor, nb_params, last_params, scale_residual=False):
     """if K.image_dim_ordering() == "th":
         channel_axis = 1
-    else:"""
+    else:
+        channel_axis = -1"""
 
-    channel_axis = -1
 
     # Input is relu activation
     init = input_tensor
@@ -100,7 +106,7 @@ def inception_resnet_v2_C(input_tensor, nb_params, last_params, scale_residual=F
     ir2 = Conv2D(int(nb_params*1.1666666), kernel_size=(1,3), activation='relu', padding='same')(ir2)
     ir2 = Conv2D(int(nb_params*1.3333333), kernel_size=(3,1), activation='relu', padding='same')(ir2)
 
-    ir_merge = concatenate([ir1, ir2], axis=channel_axis)
+    ir_merge = keras.layers.concatenate([ir1, ir2], axis=channel_axis)
 
     ir_conv = Conv2D(last_params, kernel_size=(1,1), activation='linear', padding='same')(ir_merge)
     if scale_residual: ir_conv = Lambda(lambda x: x * 0.1)(ir_conv)
@@ -114,9 +120,8 @@ def inception_resnet_v2_C(input_tensor, nb_params, last_params, scale_residual=F
 def reduction_A(input_tensor, nb_params):
     """if K.image_dim_ordering() == "th":
         channel_axis = 1
-    else:"""
-
-    channel_axis = -1
+    else:
+        channel_axis = -1"""
 
     r1 = MaxPooling2D((3,3), padding='valid', strides=(2,2))(input_tensor)
 
@@ -126,7 +131,7 @@ def reduction_A(input_tensor, nb_params):
     r3 = Conv2D(nb_params, kernel_size=(3,3), activation='relu', padding='same')(r3)
     r3 = Conv2D(int(nb_params*1.5), kernel_size=(3,3), activation='relu', padding='valid', strides=(2,2))(r3)
 
-    m = concatenate([r1, r2, r3], axis=channel_axis)
+    m = keras.layers.concatenate([r1, r2, r3], axis=channel_axis)
     m = Activation('relu')(m)
     
     return m
@@ -135,9 +140,10 @@ def reduction_A(input_tensor, nb_params):
 def reduction_resnet_v2_B(input_tensor, nb_params):
     """if K.image_dim_ordering() == "th":
         channel_axis = 1
-    else:"""
+    else:
+        channel_axis = -1"""
 
-    channel_axis = -1
+    
 
     r1 = MaxPooling2D((3,3), padding='valid', strides=(2,2))(input_tensor)
 
@@ -151,7 +157,7 @@ def reduction_resnet_v2_B(input_tensor, nb_params):
     r4 = Conv2D(int(nb_params*1.125), kernel_size=(3,3), activation='relu', padding='same')(r4)
     r4 = Conv2D(int(nb_params*1.25), kernel_size=(3,3), activation='relu', padding='valid', strides=(2, 2))(r4)
     
-    m = concatenate([r1, r2, r3, r4], axis=channel_axis)
+    m = keras.layers.concatenate([r1, r2, r3, r4], axis=channel_axis)
     m = Activation('relu')(m)
     
     return m
@@ -214,14 +220,13 @@ def cs_setup_cnn(params, inshape=None, classes=None):
     """if K.image_dim_ordering() == 'th':
         channel_axis = 1
     else:
-        """
+        channel_axis = -1"""
 
-    channel_axis = -1
     print("Channel axis is "+str(channel_axis))
         
     # Assign image input
-    inlayer = Input(shape=inshape)
-    x = conv2d_bn(inlayer, params['conv1_units'], kernel_size=4, strides=2)
+    inlayer = Input(inshape)
+    x = conv2d_bn(x=inlayer, nb_filter=params['conv1_units'], kernel_size=4, strides=2)
 
     # Inception Resnet A
     for i in range(params['num_block1']):
@@ -233,8 +238,8 @@ def cs_setup_cnn(params, inshape=None, classes=None):
 
     # Inception Resnet B
     for i in range(params['num_block2']):
-        last_params = int(params['conv1_unitFs']+(params['conv3_units']*3))
-        x = inception_resnet_v2_B(x, params['conv4_units'], last_params, scale_residual=False)
+        last_params = int(params['conv1_units']+(params['conv3_units']*3))
+        x = inception_resnet_v2_B(input_tensor=x, nb_params=params['conv4_units'], last_params=last_params, scale_residual=False)
 
     # Reduction Resnet B
     x = reduction_resnet_v2_B(x, params['conv5_units'])

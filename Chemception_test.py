@@ -1,5 +1,4 @@
 import statistics
-import matplotlib.pyplot as plt
 from numpy import std
 from MachineLearning.CNNDesignAndSetup import *
 from MachineLearning.evaluation import *
@@ -69,6 +68,7 @@ model_test_accuarcy = []
 model_train_AUC = []
 model_val_AUC = []
 model_test_AUC = []
+input_shape = X_train_and_valid.shape[1:]
 
 if (os.path.exists(path + modelName + "_Evaluation_df" + ".pickle")):
     print(f"_________Files at {path} was found. If you want to train a new model, delete files in that path_________")
@@ -80,7 +80,6 @@ if (os.path.exists(path + modelName + "_Evaluation_df" + ".pickle")):
 
 else:
     kfolds = 5
-    input_shape = X_train_and_valid.shape[1:]
     kf = StratifiedKFold(kfolds, shuffle=True, random_state=random_state) 
     fold = 0
 

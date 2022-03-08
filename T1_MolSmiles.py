@@ -1,5 +1,4 @@
 import statistics
-import matplotlib.pyplot as plt
 from numpy import std
 from MachineLearning.CNNDesignAndSetup import *
 from MachineLearning.evaluation import *
@@ -36,7 +35,7 @@ params = {
     'num_block1': 1,
     'num_block2': 1,
     'num_block3': 1,
-    'dropval': 0.2, 
+    'dropval': 0, 
 }
 
 # _____________________load or create data with if statement _____________________
@@ -81,6 +80,8 @@ model_test_accuarcy = []
 model_train_AUC = []
 model_val_AUC = []
 model_test_AUC = []
+input_shape = X_train_and_valid.shape[1:]
+print(input_shape)
 
 if (os.path.exists(path + modelName + "_Evaluation_df" + ".pickle")):
     print(f"_________Files at {path} was found. If you want to train a new model, delete files in that path_________")
@@ -92,8 +93,6 @@ if (os.path.exists(path + modelName + "_Evaluation_df" + ".pickle")):
 
 else:
     kfolds = 5
-    input_shape = X_train_and_valid.shape[1:]
-    print(input_shape)
     kf = StratifiedKFold(kfolds, shuffle=True, random_state=random_state) 
     fold = 0
 
@@ -109,11 +108,11 @@ else:
         y_train_cv = np.asarray(y_train_and_valid[train]).reshape(-1,1)
         X_valid_cv = np.asarray(X_train_and_valid[test])
         y_valid_cv = np.asarray(y_train_and_valid[test]).reshape(-1,1)
-        input_img = Input(shape=input_shape)
         
         # Building the model
-        model= cs_setup_cnn(params, inshape=input_img)
+        model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1)
         print(model.summary())
+        print(submodel.summary())
         break
 
         # Fiting the model

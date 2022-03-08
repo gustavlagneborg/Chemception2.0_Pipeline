@@ -6,7 +6,6 @@ rdDepictor.SetPreferCoordGen(True)
 from rdkit.Chem.Descriptors import MolWt,NumRotatableBonds,HeavyAtomCount
 from collections import Counter
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 import cv2
 from tqdm import tqdm
