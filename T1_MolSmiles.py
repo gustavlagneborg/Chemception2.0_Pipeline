@@ -12,11 +12,14 @@ from keras.models import Sequential, Model
 from keras.layers import Conv2D, MaxPooling2D, Input, GlobalMaxPooling2D
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from tensorflow.keras.optimizers import Adam
+from keras.callbacks import TerminateOnNaN, EarlyStopping, ReduceLROnPlateau, CSVLogger, ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, EarlyStopping, Callback, LearningRateScheduler, LambdaCallback
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau
 from keras import backend as K
+import sys
 
-# varibale setup
+# configuration
 random_state = 125
 tf.random.set_seed(
     random_state
@@ -24,6 +27,11 @@ tf.random.set_seed(
 
 path = "SavedModels/T1_MolSmiles/"
 modelName = "T1_MolSmiles"
+batch_size=32
+nb_epoch = 50
+verbose = 1
+# change depending on image, 180 for mol images, 0 for others
+rotation_range = 180
 
 params = {
     'conv1_units': 32,
@@ -51,7 +59,9 @@ if (os.path.exists("Data/MolFromSmilesArray/trainData.pickle")):
     trainAndValidData = pickle.load(pickle_in)
 
 else:
+    print("Producing test data!" + "\n")
     trainAndValidData = tensorDataPrep(loadPath=DirTrainImg, savePath=DirTrainArray, testOrTrain="Train")
+    print("Done!")
 
     # Loading individual test data
 if (os.path.exists("Data/MolFromSmilesArray/testData.pickle")):
@@ -59,7 +69,9 @@ if (os.path.exists("Data/MolFromSmilesArray/testData.pickle")):
     pickle_in = open("Data/MolFromSmilesArray/testData.pickle","rb")
     testData = pickle.load(pickle_in)
 else:
+    print("Producing test data!" + "\n")
     testData = tensorDataPrep(loadPath=DirTestImg, savePath=DirTestArray, testOrTrain="Test")
+    print("Done!")
 
 X_train_and_valid = np.array(list(trainAndValidData.iloc[:, 0].values))
 y_train_and_valid = trainAndValidData.iloc[:, 1].values
@@ -81,7 +93,6 @@ model_train_AUC = []
 model_val_AUC = []
 model_test_AUC = []
 input_shape = X_train_and_valid.shape[1:]
-print(input_shape)
 
 if (os.path.exists(path + modelName + "_Evaluation_df" + ".pickle")):
     print(f"_________Files at {path} was found. If you want to train a new model, delete files in that path_________")
@@ -111,27 +122,26 @@ else:
         
         # Building the model
         model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1)
-        print(model.summary())
-        print(submodel.summary())
-        break
 
-        # Fiting the model
-        generator = ImageDataGenerator(rotation_range=180,
-                                width_shift_range=0.1, height_shift_range=0.1,
-                                fill_mode="constant", cval = 0,
-                                horizontal_flip=True, vertical_flip=True, data_format='channels_last')
+        if fold == 1:
+            print(model.summary())
 
-        batch_size=32
-        g = generator.flow(X_train_cv, y_train_cv, batch_size=batch_size, shuffle=True)
-        steps_per_epoch = 10000/batch_size
-
-        reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5,patience=10, min_lr=1e-6, verbose=1)
-
-        history = model.fit_generator(g,
-                                steps_per_epoch=len(X_train_cv)//batch_size,
-                                epochs=50,
-                                validation_data=(X_valid_cv, y_valid_cv),
-                                callbacks=[reduce_lr])
+        # Setup callbacks
+        filecp = path+"_bestweights_trial_"+str(fold)+".hdf5"
+        filecsv = path+"_loss_curve_"+str(fold)+".csv"
+        callbacks = [TerminateOnNaN(),
+                     LambdaCallback(on_epoch_end=lambda epoch,logs: sys.stdout.flush()),
+                     EarlyStopping(monitor='val_loss', patience=25, verbose=1, mode='auto'),
+                     ModelCheckpoint(filecp, monitor="val_loss", verbose=1, save_best_only=True, mode="auto"),
+                     CSVLogger(filecsv)]
+        
+        # Train model
+        datagen = ImageDataGenerator(rotation_range=rotation_range, fill_mode='constant', cval=0.)
+        history = model.fit_generator(datagen.flow(X_train_cv, y_train_cv, batch_size=batch_size),
+                                    epochs=nb_epoch, steps_per_epoch=X_train_cv.shape[0]/batch_size,
+                                    verbose=verbose,
+                                    validation_data=(X_valid_cv, y_valid_cv),
+                                    callbacks=callbacks)
 
         # train predictions
         train_y_pred_cv = model.predict(X_train_cv)
@@ -164,7 +174,7 @@ else:
 
     #_____________________evaluation_____________________
     # train/validation/test data
-"""
+
     # Build and save evaluation dataframe
     model_train_accuarcy.append(statistics.mean(model_train_accuarcy))
     model_train_accuarcy.append(statistics.stdev(model_train_accuarcy))
@@ -200,7 +210,7 @@ else:
     pickle_out = open(path + modelName + "_Evaluation_df" + ".pickle","wb")
     pickle.dump(eval_df, pickle_out)
     pickle_out.close()
-     """
+    
     
 
 

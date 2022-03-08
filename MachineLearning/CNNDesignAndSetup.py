@@ -10,7 +10,6 @@ from keras.regularizers import l2, l1, l1_l2
 from keras import backend as K
 import keras
 
-#K.set_image_data_format('channels_first')
 channel_axis = -1
 
 def conv2d_bn(x, nb_filter, kernel_size=4, padding='same', strides=2):
@@ -268,11 +267,11 @@ def cs_setup_cnn(params, inshape=None, classes=None):
     
     # Specify training method
     if classes == 1:
-        model.compile(optimizer="RMSprop", loss="mean_squared_error")
-        submodel.compile(optimizer="RMSprop", loss="mean_squared_error")
+        model.compile(optimizer="RMSprop", loss="mean_squared_error", metrics=["accuracy"])
+        submodel.compile(optimizer="RMSprop", loss="mean_squared_error", metrics=["accuracy"])
     elif classes >= 2:
-        model.compile(optimizer="RMSprop", loss="categorical_crossentropy")
-        submodel.compile(optimizer="RMSprop", loss="categorical_crossentropy")
+        model.compile(optimizer="RMSprop", loss="categorical_crossentropy", metrics=["accuracy"])
+        submodel.compile(optimizer="RMSprop", loss="categorical_crossentropy", metrics=["accuracy"])
     else:
         raise("ERROR in specifying tasktype")
     
