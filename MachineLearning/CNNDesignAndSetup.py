@@ -142,8 +142,6 @@ def reduction_resnet_v2_B(input_tensor, nb_params):
     else:
         channel_axis = -1"""
 
-    
-
     r1 = MaxPooling2D((3,3), padding='valid', strides=(2,2))(input_tensor)
 
     r2 = Conv2D(nb_params, kernel_size=(1,1), activation='relu', padding='same')(input_tensor)

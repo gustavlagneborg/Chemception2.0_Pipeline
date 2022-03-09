@@ -59,7 +59,7 @@ if (os.path.exists("Data/MolFromSmilesArray/trainData.pickle")):
     trainAndValidData = pickle.load(pickle_in)
 
 else:
-    print("Producing test data!" + "\n")
+    print("Producing train data!" + "\n")
     trainAndValidData = tensorDataPrep(loadPath=DirTrainImg, savePath=DirTrainArray, testOrTrain="Train")
     print("Done!")
 

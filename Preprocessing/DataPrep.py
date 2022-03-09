@@ -128,7 +128,7 @@ def oversample(df, feature):
 def tensorDataPrep(loadPath, savePath, testOrTrain):
     data = []
     # creata train and test data
-    for img in os.listdir(loadPath)[:5000]:
+    for img in os.listdir(loadPath):
         img_array = cv2.imread(os.path.join(loadPath + img))
         img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)
         if "inactive" in img:
