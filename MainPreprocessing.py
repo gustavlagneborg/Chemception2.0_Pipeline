@@ -138,3 +138,5 @@ else:
     # test images
     generateImageSMILEColor(path="Images/SmilesColorImages/Test/", compoundList=df_inactives_test, HIV_activity="inactive", withChars=False)
     generateImageSMILEColor(path="Images/SmilesColorImages/Test/", compoundList=df_actives_test, HIV_activity="active", withChars=False)
+
+print("Done!")
