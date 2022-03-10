@@ -30,10 +30,10 @@ def cs_compute_results(model, classes=None, train_data=None, valid_data=None, te
     if classes == 1:
         rmse_train = np.sqrt(loss_train[1])
     elif classes == 2:
-        y_preds_train = model.predict(X_tmp)
+        y_preds_train = model.predict(X_tmp, batch_size=1)
         auc_train = cs_auc(y_tmp, y_preds_train)
     elif classes > 2:
-        y_preds_train = model.predict(X_tmp)
+        y_preds_train = model.predict(X_tmp, batch_size=1)
         auc_train = cs_multiclass_auc(y_tmp, y_preds_train)
     else:
         raise(Exception('Error in determine problem type'))
@@ -45,10 +45,10 @@ def cs_compute_results(model, classes=None, train_data=None, valid_data=None, te
     if classes == 1:
         rmse_valid = np.sqrt(loss_valid[1])
     elif classes == 2:
-        y_preds_valid = model.predict(X_tmp)
+        y_preds_valid = model.predict(X_tmp, batch_size=1)
         auc_valid = cs_auc(y_tmp, y_preds_valid)
     elif classes > 2:
-        y_preds_valid = model.predict(X_tmp)
+        y_preds_valid = model.predict(X_tmp, batch_size=1)
         auc_valid = cs_multiclass_auc(y_tmp, y_preds_valid)
     else:
         raise(Exception('Error in determine problem type'))
@@ -60,10 +60,10 @@ def cs_compute_results(model, classes=None, train_data=None, valid_data=None, te
     if classes == 1:
         rmse_test = np.sqrt(loss_test[1])
     elif classes == 2:
-        y_preds_test = model.predict(X_tmp)
+        y_preds_test = model.predict(X_tmp, batch_size=1)
         auc_test = cs_auc(y_tmp, y_preds_test)
     elif classes > 2:
-        y_preds_test = model.predict(X_tmp)
+        y_preds_test = model.predict(X_tmp, batch_size=1)
         auc_test = cs_multiclass_auc(y_tmp, y_preds_test)
     else:
         raise(Exception('Error in determine problem type'))

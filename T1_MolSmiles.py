@@ -83,7 +83,21 @@ y_test = testData.iloc[:, 1].values.reshape(-1,1)
 
 #  _____________________Check if GPU is available_____________________
 print("Num GPUs Available: ", str(len(tf.config.list_physical_devices('GPU'))) + "\n")
-sess = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(log_device_placement=True))
+
+gpus = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(gpus[0], True)
+
+"""gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+    # Restrict TensorFlow to only allocate 2GB of memory on the first GPU
+    try:
+        tf.config.experimental.set_virtual_device_configuration(gpus[0],
+       [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=2048)])
+        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+    except RuntimeError as e:
+        # Virtual devices must be set before GPUs have been initialized
+        print(e)"""
 
 #  _____________________Model setup and 5-fold CV_____________________
 # inspiration: https://github.com/jeffheaton/t81_558_deep_learning/blob/master/t81_558_class_05_2_kfold.ipynb
@@ -152,6 +166,8 @@ else:
         pickle_out = open(path + name + "_History" + ".pickle","wb")
         pickle.dump(hist, pickle_out)
         pickle_out.close()
+
+        K.clear_session()
 
         # Reload best model & compute results
         model.load_weights(filecp)
