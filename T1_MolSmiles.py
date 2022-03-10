@@ -25,6 +25,7 @@ tf.random.set_seed(
     random_state
 )
 
+
 path = "SavedModels/T1_MolSmiles/"
 modelName = "T1_MolSmiles"
 batch_size = 32
@@ -76,6 +77,7 @@ else:
 X_train_and_valid = np.array(list(trainAndValidData.iloc[:, 0].values))
 y_train_and_valid = trainAndValidData.iloc[:, 1].values
 
+
 X_test = np.array(list(testData.iloc[:, 0].values))
 y_test = testData.iloc[:, 1].values.reshape(-1,1)
 
@@ -106,6 +108,7 @@ else:
     kfolds = 5
     kf = StratifiedKFold(kfolds, shuffle=True, random_state=random_state) 
     fold = 0
+    cv_results = pd.DataFrame(columns=['Train Loss', 'Validation Loss', 'Test Loss', 'Train AUC', 'Validation AUC', 'Test AUC'])
 
     print("______________Training model - 5 fold CV______________")
     print()
@@ -143,16 +146,45 @@ else:
                                     validation_data=(X_valid_cv, y_valid_cv),
                                     callbacks=callbacks)
 
+        # Save model and history
+        hist = history.history
+        model.save(path + name)
+        pickle_out = open(path + name + "_History" + ".pickle","wb")
+        pickle.dump(hist, pickle_out)
+        pickle_out.close()
+
+        # Reload best model & compute results
+        model.load_weights(filecp)
+        cs_compute_results(model, classes=1, df_out=cv_results,
+                           train_data=(X_train_cv, y_train_cv),
+                           valid_data=(X_valid_cv, y_valid_cv),
+                           test_data=(X_test,y_test))
+
+    # Calculate results for entire CV
+    final_mean = cv_results.mean(axis=0)
+    final_std = cv_results.std(axis=0)
+    cv_results.to_csv('results.csv', index=False)
+    
+    # Print final results
+    print('*** TRIAL RESULTS: '+str(fold))
+    print('*** PARAMETERS TESTED: '+str(params))
+
+    """print(('train_loss: %.3f +/- %.3f, train_auc: %.3f +/- %.3f, val_loss: %.3f +/- %.3f, val_auc: %.3f +/- %.3f, test_loss: %.3f +/- %.3f, test_auc: %.3f +/- %.3f')
+              %(final_mean[0], final_std[0], final_mean[3], final_std[3],
+                final_mean[1], final_std[1], final_mean[4], final_std[4],
+                final_mean[2], final_std[2], final_mean[5], final_std[5]))"""
+
+    """ model_loaded = keras.models.load_model(path + name)
         # train predictions
-        train_y_pred_cv = model.predict(X_train_cv)
+        train_y_pred_cv = model_loaded.predict(X_train_cv)
         train_y_pred_cv = np.round(train_y_pred_cv)
 
         # validiation predictions
-        valid_y_pred_cv = model.predict(X_valid_cv)
+        valid_y_pred_cv = model_loaded.predict(X_valid_cv)
         valid_y_pred_cv = np.round(valid_y_pred_cv)
 
         # test predictions (individual testset)
-        test_y_pred = model.predict(X_test)
+        test_y_pred = model_loaded.predict(X_test)
         test_y_pred = np.round(test_y_pred)
 
         # Calculating model Accuracy
@@ -165,12 +197,7 @@ else:
         model_val_AUC.append(roc_auc_score(y_valid_cv, valid_y_pred_cv))
         model_test_AUC.append(roc_auc_score(y_test, test_y_pred))
 
-        # Save model and history
-        hist = history.history
-        model.save(path + name)
-        pickle_out = open(path + name + "_History" + ".pickle","wb")
-        pickle.dump(hist, pickle_out)
-        pickle_out.close()
+        
 
     #_____________________evaluation_____________________
     # train/validation/test data
@@ -210,7 +237,7 @@ else:
     pickle_out = open(path + modelName + "_Evaluation_df" + ".pickle","wb")
     pickle.dump(eval_df, pickle_out)
     pickle_out.close()
-    
+    """
     
 
 
