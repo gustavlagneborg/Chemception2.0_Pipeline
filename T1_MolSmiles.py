@@ -181,6 +181,7 @@ else:
     # Print final results
     print('*** TRIAL RESULTS: '+str(fold))
     print('*** PARAMETERS TESTED: '+str(params))
+    print(cv_results)
 
     """print(('train_loss: %.3f +/- %.3f, train_auc: %.3f +/- %.3f, val_loss: %.3f +/- %.3f, val_auc: %.3f +/- %.3f, test_loss: %.3f +/- %.3f, test_auc: %.3f +/- %.3f')
               %(final_mean[0], final_std[0], final_mean[3], final_std[3],
