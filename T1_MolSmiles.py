@@ -18,6 +18,10 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau
 from keras import backend as K
 import sys
+#from tensorflow.compat.v1 import ConfigProto
+#from tensorflow.compat.v1 import InteractiveSession
+
+print(tf.__version__)
 
 # configuration
 random_state = 125
@@ -29,7 +33,7 @@ tf.random.set_seed(
 path = "SavedModels/T1_MolSmiles/"
 modelName = "T1_MolSmiles"
 batch_size = 32
-nb_epoch = 100
+nb_epoch = 5 #100
 verbose = 1
 # change depending on image, 180 for mol images, 0 for others
 rotation_range = 180
@@ -85,19 +89,11 @@ y_test = testData.iloc[:, 1].values.reshape(-1,1)
 print("Num GPUs Available: ", str(len(tf.config.list_physical_devices('GPU'))) + "\n")
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(gpus[0], True)
-
-"""gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
-    # Restrict TensorFlow to only allocate 2GB of memory on the first GPU
-    try:
-        tf.config.experimental.set_virtual_device_configuration(gpus[0],
-       [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=2048)])
-        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
-        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
-    except RuntimeError as e:
-        # Virtual devices must be set before GPUs have been initialized
-        print(e)"""
+  try:
+    tf.config.experimental.set_virtual_device_configuration(gpus[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=3072)])
+  except RuntimeError as e:
+    print(e)
 
 #  _____________________Model setup and 5-fold CV_____________________
 # inspiration: https://github.com/jeffheaton/t81_558_deep_learning/blob/master/t81_558_class_05_2_kfold.ipynb
@@ -110,12 +106,14 @@ model_val_AUC = []
 model_test_AUC = []
 input_shape = X_train_and_valid.shape[1:]
 
-if (os.path.exists(path + modelName + "_Evaluation_df" + ".pickle")):
+if (os.path.exists(path + 'results.csv')):
     print(f"_________Files at {path} was found. If you want to train a new model, delete files in that path_________")
     print()
 
-    pickle_in = open(path + modelName + "_Evaluation_df" + ".pickle","rb")
-    eval_df = pickle.load(pickle_in)
+    eval_df = pd.read_csv(path + "results.csv")
+
+    """pickle_in = open(path + modelName + "_Evaluation_df" + ".pickle","rb")
+    eval_df = pickle.load(pickle_in)"""
     print(eval_df)
 
 else:
@@ -167,19 +165,18 @@ else:
         pickle.dump(hist, pickle_out)
         pickle_out.close()
 
-        K.clear_session()
-
-        # Reload best model & compute results
-        model.load_weights(filecp)
-        cs_compute_results(model, classes=1, df_out=cv_results,
-                           train_data=(X_train_cv, y_train_cv),
-                           valid_data=(X_valid_cv, y_valid_cv),
-                           test_data=(X_test,y_test))
+        with tf.device('/cpu:0'):
+            # Reload best model & compute results
+            model.load_weights(filecp)
+            cs_compute_results(model, classes=1, df_out=cv_results,
+                            train_data=(X_train_cv, y_train_cv),
+                            valid_data=(X_valid_cv, y_valid_cv),
+                            test_data=(X_test,y_test))
 
     # Calculate results for entire CV
     final_mean = cv_results.mean(axis=0)
     final_std = cv_results.std(axis=0)
-    cv_results.to_csv('results.csv', index=False)
+    cv_results.to_csv(path + 'results.csv', index=False)
     
     # Print final results
     print('*** TRIAL RESULTS: '+str(fold))

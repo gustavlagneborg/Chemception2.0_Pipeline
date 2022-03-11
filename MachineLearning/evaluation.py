@@ -25,10 +25,9 @@ def cs_compute_results(model, classes=None, train_data=None, valid_data=None, te
     X_tmp = train_data[0]
     y_tmp = train_data[1]    
     loss_train = model.evaluate(X_tmp, y_tmp, verbose=0)
-    print(loss_train)
     
     if classes == 1:
-        rmse_train = np.sqrt(loss_train[1])
+        rmse_train = np.sqrt(loss_train)
     elif classes == 2:
         y_preds_train = model.predict(X_tmp, batch_size=1)
         auc_train = cs_auc(y_tmp, y_preds_train)
@@ -43,7 +42,7 @@ def cs_compute_results(model, classes=None, train_data=None, valid_data=None, te
     y_tmp = valid_data[1]
     loss_valid = model.evaluate(X_tmp, y_tmp, verbose=0)
     if classes == 1:
-        rmse_valid = np.sqrt(loss_valid[1])
+        rmse_valid = np.sqrt(loss_valid)
     elif classes == 2:
         y_preds_valid = model.predict(X_tmp, batch_size=1)
         auc_valid = cs_auc(y_tmp, y_preds_valid)
@@ -58,7 +57,7 @@ def cs_compute_results(model, classes=None, train_data=None, valid_data=None, te
     y_tmp = test_data[1]    
     loss_test = model.evaluate(X_tmp, y_tmp, verbose=0)
     if classes == 1:
-        rmse_test = np.sqrt(loss_test[1])
+        rmse_test = np.sqrt(loss_test)
     elif classes == 2:
         y_preds_test = model.predict(X_tmp, batch_size=1)
         auc_test = cs_auc(y_tmp, y_preds_test)
@@ -69,9 +68,9 @@ def cs_compute_results(model, classes=None, train_data=None, valid_data=None, te
         raise(Exception('Error in determine problem type'))
     
     if classes == 1:
-        print("\nFINAL TRA_LOSS: %.3f"%(loss_train[1]))
-        print("FINAL VAL_LOSS: %.3f"%(loss_valid[1]))
-        print("FINAL TST_LOSS: %.3f"%(loss_test[1]))
+        print("\nFINAL TRA_LOSS: %.3f"%(loss_train))
+        print("FINAL VAL_LOSS: %.3f"%(loss_valid))
+        print("FINAL TST_LOSS: %.3f"%(loss_test))
         print("FINAL TRA_RMSE: %.3f"%(rmse_train))
         print("FINAL VAL_RMSE: %.3f"%(rmse_valid))
         print("FINAL TST_RMSE: %.3f"%(rmse_test))
