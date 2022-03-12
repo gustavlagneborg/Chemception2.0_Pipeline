@@ -36,7 +36,7 @@ batch_size = 32
 nb_epoch = 100
 verbose = 1
 # change depending on image, 180 for mol images, 0 for others
-rotation_range = 180
+rotation_range = 0
 
 params = {
     'conv1_units': 32,
