@@ -147,7 +147,7 @@ else:
     chemcepterize_mol(path="Images/ChemOriginalImages/Train/", compoundList=df_actives_train, HIV_activity="active")
 
     # test images
-    chemcepterize_mol(path="Images/ChemOriginalImages/Test/", compoundList=df_inactives_train, HIV_activity="inactive")
-    chemcepterize_mol(path="Images/ChemOriginalImages/Test/", compoundList=df_actives_train, HIV_activity="active")
+    chemcepterize_mol(path="Images/ChemOriginalImages/Test/", compoundList=df_inactives_test, HIV_activity="inactive")
+    chemcepterize_mol(path="Images/ChemOriginalImages/Test/", compoundList=df_actives_test, HIV_activity="active")
 
 print("Done!")

@@ -82,7 +82,6 @@ else:
 X_train_and_valid = np.array(list(trainAndValidData.iloc[:, 0].values))
 y_train_and_valid = trainAndValidData.iloc[:, 1].values
 
-
 X_test = np.array(list(testData.iloc[:, 0].values))
 y_test = testData.iloc[:, 1].values.reshape(-1,1)
 
@@ -106,6 +105,7 @@ model_train_AUC = []
 model_val_AUC = []
 model_test_AUC = []
 input_shape = X_train_and_valid.shape[1:]
+
 
 if (os.path.exists(path + 'results.csv')):
     print(f"_________Files at {path} was found. If you want to train a new model, delete files in that path_________")
@@ -253,7 +253,6 @@ else:
     pickle.dump(eval_df, pickle_out)
     pickle_out.close()
     """
-    
 
 
 

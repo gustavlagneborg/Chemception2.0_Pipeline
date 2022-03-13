@@ -4,9 +4,8 @@ from rdkit import Chem
 from PIL import Image
 from PIL import ImageDraw
 import numpy as np
-#import matplotlib.pyplot as plt
-from rdkit.Chem import AllChem
-
+import matplotlib.pyplot as plt
+import cv2
 
 # --------MolImages--------
 
@@ -284,47 +283,3 @@ def generateImageSMILEColor(path, compoundList, HIV_activity, withChars=True):
 
 
 # --------ChemOriginal Images--------
-def chemcepterize_mol(path, compoundList, HIV_activity, embed=20.0, res=0.5):
-    
-    # Counter to make each image name unique since oversampling has created copies of different samples
-    counter = 0
-
-    for index, compound in compoundList.iterrows()[:10]:
-        filename = path + compound["MolName"].replace(" ", "_") + "_" + HIV_activity + str(counter) + ".png"
-
-        dims = int(embed*2/res)
-        cmol = Chem.Mol(compound.ToBinary())
-        cmol.ComputeGasteigerCharges()
-        AllChem.Compute2DCoords(cmol)
-        coords = cmol.GetConformer(0).GetPositions()
-        vect = np.zeros((dims,dims,4))
-        #Bonds first
-        for i,bond in enumerate(compound.GetBonds()):
-            bondorder = bond.GetBondTypeAsDouble()
-            bidx = bond.GetBeginAtomIdx()
-            eidx = bond.GetEndAtomIdx()
-            bcoords = coords[bidx]
-            ecoords = coords[eidx]
-            frac = np.linspace(0,1,int(1/res*2)) #
-            for f in frac:
-                c = (f*bcoords + (1-f)*ecoords)
-                idx = int(round((c[0] + embed)/res))
-                idy = int(round((c[1]+ embed)/res))
-                #Save in the vector first channel
-                vect[ idx , idy ,0] = bondorder
-        #Atom Layers
-        for i,atom in enumerate(cmol.GetAtoms()):
-                idx = int(round((coords[i][0] + embed)/res))
-                idy = int(round((coords[i][1]+ embed)/res))
-                #Atomic number
-                vect[ idx , idy, 1] = atom.GetAtomicNum()
-                #Gasteiger Charges
-                charge = atom.GetProp("_GasteigerCharge")
-                vect[ idx , idy, 3] = charge
-                #Hybridization
-                hyptype = atom.GetHybridization().real
-                vect[ idx , idy, 2] = hyptype
-    
-        vect.save(fp=filename)
-    
-    print(f"Done producing ChemOriginal Images {HIV_activity} compounds for path: {path}. {counter} images was created")

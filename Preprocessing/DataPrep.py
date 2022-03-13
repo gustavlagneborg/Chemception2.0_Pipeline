@@ -11,6 +11,7 @@ import cv2
 from tqdm import tqdm
 import random
 import pickle
+from rdkit.Chem import AllChem
 
 from tdc.single_pred import HTS
 from tqdm import tqdm
@@ -145,4 +146,39 @@ def tensorDataPrep(loadPath, savePath, testOrTrain):
 
     return data # X, y
 
+def chemcepterize_mol(mol, embed=20.0, res=0.5):
+    dims = int(embed*2/res)
+    cmol = Chem.Mol(mol.ToBinary())
+    cmol.ComputeGasteigerCharges()
+    AllChem.Compute2DCoords(cmol)
+    coords = cmol.GetConformer(0).GetPositions()
+    vect = np.zeros((dims,dims,4))
+    #Bonds first
+    for i,bond in enumerate(mol.GetBonds()):
+        bondorder = bond.GetBondTypeAsDouble()
+        bidx = bond.GetBeginAtomIdx()
+        eidx = bond.GetEndAtomIdx()
+        bcoords = coords[bidx]
+        ecoords = coords[eidx]
+        frac = np.linspace(0,1,int(1/res*2)) #
+        for f in frac:
+            c = (f*bcoords + (1-f)*ecoords)
+            idx = int(round((c[0] + embed)/res))
+            idy = int(round((c[1]+ embed)/res))
+            #Save in the vector first channel
+            vect[ idx , idy ,0] = bondorder
+    #Atom Layers
+    for i,atom in enumerate(cmol.GetAtoms()):
+            idx = int(round((coords[i][0] + embed)/res))
+            idy = int(round((coords[i][1]+ embed)/res))
+            #Atomic number
+            vect[ idx , idy, 1] = atom.GetAtomicNum()
+            #Gasteiger Charges
+            charge = atom.GetProp("_GasteigerCharge")
+            vect[ idx , idy, 3] = charge
+            #Hybridization
+            hyptype = atom.GetHybridization().real
+            vect[ idx , idy, 2] = hyptype
+
+    return vect
 
