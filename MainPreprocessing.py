@@ -71,8 +71,8 @@ if (train_file_exists == False and test_file_exists == False):
     testing_data.to_csv(path_or_buf = "data/df_test_preprocessed.csv")
 else:
     print("Found local preprocessed dataframe")
-    training_data = pd.read_csv("data/df_train_preprocessed.csv", index_col=[0])
-    testing_data = pd.read_csv("data/df_test_preprocessed.csv", index_col=[0])
+    training_data = pd.read_csv("data/df_train_preprocessed.csv", index_col=[0]).reset_index(drop=True)
+    testing_data = pd.read_csv("data/df_test_preprocessed.csv", index_col=[0]).reset_index(drop=True)
 
 # creating a list of inactive and active compounds
 df_inactives_train = training_data.loc[(training_data['HIV_active'] == 0)].reset_index(drop=True)
@@ -84,12 +84,9 @@ df_actives_test = testing_data.loc[(testing_data['HIV_active'] == 1)].reset_inde
 # --------MolImages--------
 for fname in os.listdir('Images/MolFromSmilesImages/Train'):
     if fname.endswith('.png'):
-        # do stuff on the file
-        print("png files already exists in specified path")
+        print("png files already exists in specified path - Mol Images")
         break
 else:
-
-        # do stuff if a file .true doesn't exist.
     print("Starting to produce molecular images!")
     # creating list of RDKit mol objects for inactive and active compounds
     inactivesList_train = getMolListFromDataFrame(df_inactives_train, "MolName")
@@ -111,7 +108,7 @@ else:
 for fname in os.listdir('Images/SmilesImages/Train'):
     if fname.endswith('.png'):
         # do stuff on the file
-        print("png files already exists in specified path")
+        print("png files already exists in specified path - Smiles Images")
         break
 else:
 
@@ -127,8 +124,7 @@ else:
 # uses smiles to produce images
 for fname in os.listdir('Images/SmilesColorImages/Train'):
     if fname.endswith('.png'):
-        # do stuff on the file
-        print("png files already exists in specified path")
+        print("png files already exists in specified path - Smiles Color Images")
         break
 else:
     # train images
@@ -138,5 +134,20 @@ else:
     # test images
     generateImageSMILEColor(path="Images/SmilesColorImages/Test/", compoundList=df_inactives_test, HIV_activity="inactive", withChars=False)
     generateImageSMILEColor(path="Images/SmilesColorImages/Test/", compoundList=df_actives_test, HIV_activity="active", withChars=False)
+
+# --------ChemOriginal Images--------
+for fname in os.listdir('Images/ChemOriginalImages/Train'):
+    if fname.endswith('.png'):
+        # do stuff on the file
+        print("png files already exists in specified path - ChemOriginal Images")
+        break
+else:
+    # train images
+    chemcepterize_mol(path="Images/ChemOriginalImages/Train/", compoundList=df_inactives_train, HIV_activity="inactive")
+    chemcepterize_mol(path="Images/ChemOriginalImages/Train/", compoundList=df_actives_train, HIV_activity="active")
+
+    # test images
+    chemcepterize_mol(path="Images/ChemOriginalImages/Test/", compoundList=df_inactives_train, HIV_activity="inactive")
+    chemcepterize_mol(path="Images/ChemOriginalImages/Test/", compoundList=df_actives_train, HIV_activity="active")
 
 print("Done!")
