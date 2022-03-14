@@ -19,9 +19,9 @@ tf.random.set_seed(
 
 path = "SavedModels/T1_ChemOriginal/"
 dataPath = "Data/ChemOriginalArray/"
-modelName = "T1_MolSmiles"
+modelName = "T1_ChemOriginal"
 batch_size = 32
-nb_epoch = 2
+nb_epoch = 100
 verbose = 1
 
 # change depending on image, 180 for mol images, 0 for others
@@ -64,11 +64,13 @@ else:
     training_data.to_pickle(dataPath + "df_train_preprocessed.pkl")
     testing_data.to_pickle(dataPath + "df_test_preprocessed.pkl")
 
+
 X_train_and_valid = np.array(list(training_data["molimage"].values))
 y_train_and_valid = training_data["HIV_active"].values
 
 X_test = np.array(list(testing_data["molimage"].values))
 y_test = testing_data["HIV_active"].values.reshape(-1, 1)
+
 
 input_shape = X_train_and_valid.shape[1:]
 
@@ -81,6 +83,10 @@ if gpus:
     tf.config.experimental.set_virtual_device_configuration(gpus[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=3072)])
   except RuntimeError as e:
     print(e)
+
+model_train_AUC = []
+model_val_AUC = []
+model_test_AUC = []
 
 if os.path.exists(path + 'results.csv'):
     print(f"_________Files at {path} was found. If you want to train a new model, delete files in that path_________")
@@ -109,6 +115,9 @@ else:
         y_train_cv = np.asarray(y_train_and_valid[train]).reshape(-1, 1)
         X_valid_cv = np.asarray(X_train_and_valid[test])
         y_valid_cv = np.asarray(y_train_and_valid[test]).reshape(-1, 1)
+
+        print(np.isnan(X_train_cv))
+        print(np.isnan(X_valid_cv))
 
         # Building the model
         model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1)
@@ -141,20 +150,53 @@ else:
         pickle_out.close()
 
         with tf.device('/cpu:0'):
-            # Reload best model & compute results
-            model.load_weights(filecp)
-            cs_compute_results(model, classes=1, df_out=cv_results,
-                               train_data=(X_train_cv, y_train_cv),
-                               valid_data=(X_valid_cv, y_valid_cv),
-                               test_data=(X_test, y_test))
 
-    # Calculate results for entire CV
-    final_mean = cv_results.mean(axis=0)
-    final_std = cv_results.std(axis=0)
-    cv_results.to_csv(path + 'results.csv', index=False)
+            #model = keras.models.load_model(path + name)
+            # train predictions
+            train_y_pred_cv = model.predict(X_train_cv, batch_size=batch_size)
+            train_y_pred_cv = np.round(train_y_pred_cv)
 
-    # Print final results
-    print('*** TRIAL RESULTS: ' + str(fold))
-    print('*** PARAMETERS TESTED: ' + str(params))
-    print(cv_results)
+            # validiation predictions
+            valid_y_pred_cv = model.predict(X_valid_cv, batch_size=batch_size)
+            valid_y_pred_cv = np.round(valid_y_pred_cv)
+
+            # test predictions (individual testset)
+            test_y_pred = model.predict(X_test, batch_size=batch_size)
+            test_y_pred = np.round(test_y_pred)
+
+            # Calculating model AUC
+            model_train_AUC.append(roc_auc_score(y_train_cv, train_y_pred_cv))
+            model_val_AUC.append(roc_auc_score(y_valid_cv, valid_y_pred_cv))
+            model_test_AUC.append(roc_auc_score(y_test, test_y_pred))
+
+            #_____________________evaluation_____________________
+            # train/validation/test data
+
+    # Build and save evaluation dataframe
+    model_train_AUC.append(statistics.mean(model_train_AUC))
+    model_train_AUC.append(statistics.stdev(model_train_AUC))
+    model_val_AUC.append(statistics.mean(model_val_AUC))
+    model_val_AUC.append(statistics.stdev(model_val_AUC))
+    model_test_AUC.append(statistics.mean(model_test_AUC))
+    model_test_AUC.append(statistics.stdev(model_test_AUC))
+
+    index = ["CV " + str(i) for i in range(1, kfolds+1)]
+    index.append("Average")
+    index.append("Standard deviation")
+
+    eval_df = pd.DataFrame()
+    eval_df["index"] = index
+    eval_df["Train AUC"] = model_train_AUC
+    eval_df["Validation AUC"] = model_val_AUC
+    eval_df["Test AUC"] = model_test_AUC
+
+    eval_df = eval_df.set_index("index")
+    print()
+    print(f"_______________Evaluation of {modelName}_______________")
+    print(eval_df)
+
+    pickle_out = open(path + modelName + "_Evaluation_df" + ".pickle","wb")
+    pickle.dump(eval_df, pickle_out)
+    pickle_out.close()
+
 
