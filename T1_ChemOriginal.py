@@ -10,6 +10,7 @@ from MachineLearning.evaluation import *
 from Preprocessing.DataPrep import *
 import tensorflow as tf
 from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import train_test_split
 
 # configuration
 random_state = 125
@@ -19,8 +20,8 @@ tf.random.set_seed(
 
 path = "SavedModels/T1_ChemOriginal/"
 dataPath = "Data/ChemOriginalArray/"
-modelName = "T1_MolSmiles"
-batch_size = 32
+modelName = "T1_ChemOriginal"
+batch_size = 128
 nb_epoch = 2
 verbose = 1
 
@@ -64,23 +65,44 @@ else:
     training_data.to_pickle(dataPath + "df_train_preprocessed.pkl")
     testing_data.to_pickle(dataPath + "df_test_preprocessed.pkl")
 
-X_train_and_valid = np.array(list(training_data["molimage"].values))
-y_train_and_valid = training_data["HIV_active"].values
+training_data, validation_data = train_test_split(training_data, test_size=0.2, random_state=random_state)
 
+# train data
+X_train = np.array(list(training_data["molimage"].values))
+# X_train = tf.cast(X_train, tf.int32)
+
+y_train_pre = training_data["HIV_active"].values
+y_train = tf.one_hot(y_train_pre, depth=2)
+y_train = tf.cast(y_train, tf.int32)
+
+# validation data
+X_valid = np.array(list(validation_data["molimage"].values))
+# X_valid = tf.cast(X_valid, tf.int32)
+
+y_valid_pre = validation_data["HIV_active"].values
+y_valid = tf.one_hot(y_valid_pre, depth=2)
+y_valid = tf.cast(y_valid, tf.int32)
+
+# test data
 X_test = np.array(list(testing_data["molimage"].values))
-y_test = testing_data["HIV_active"].values.reshape(-1, 1)
+# X_test = tf.cast(X_test, tf.int32)
 
-input_shape = X_train_and_valid.shape[1:]
+y_test_pre = testing_data["HIV_active"].values
+y_test = tf.one_hot(y_test_pre, depth=2)
+y_test = tf.cast(y_test, tf.int32)
+
+input_shape = X_train.shape[1:]
 
 #  _____________________Check if GPU is available_____________________
 print("Num GPUs Available: ", str(len(tf.config.list_physical_devices('GPU'))) + "\n")
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
-  try:
-    tf.config.experimental.set_virtual_device_configuration(gpus[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=3072)])
-  except RuntimeError as e:
-    print(e)
+    try:
+        tf.config.experimental.set_virtual_device_configuration(gpus[0], [
+            tf.config.experimental.VirtualDeviceConfiguration(memory_limit=3072)])
+    except RuntimeError as e:
+        print(e)
 
 if os.path.exists(path + 'results.csv'):
     print(f"_________Files at {path} was found. If you want to train a new model, delete files in that path_________")
@@ -91,70 +113,56 @@ if os.path.exists(path + 'results.csv'):
     print(eval_df)
 
 else:
-    kfolds = 5
-    kf = StratifiedKFold(kfolds, shuffle=True, random_state=random_state)
-    fold = 0
+
     cv_results = pd.DataFrame(
         columns=['Train Loss', 'Validation Loss', 'Test Loss', 'Train AUC', 'Validation AUC', 'Test AUC'])
 
-    print("______________Training model - 5 fold CV______________")
+    print("______________Training model______________")
     print()
-    for train, test in kf.split(X_train_and_valid, y_train_and_valid):
-        fold += 1
-        print(f"Fold #{fold}")
 
-        name = modelName + "_" + str(fold)
+    # Building the model
+    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2)
 
-        X_train_cv = np.asarray(X_train_and_valid[train])
-        y_train_cv = np.asarray(y_train_and_valid[train]).reshape(-1, 1)
-        X_valid_cv = np.asarray(X_train_and_valid[test])
-        y_valid_cv = np.asarray(y_train_and_valid[test]).reshape(-1, 1)
+    print(model.summary())
 
-        # Building the model
-        model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1)
+    # Setup callbacks
+    filecp = path + "_bestweights_trial_" + ".hdf5"
+    filecsv = path + "_loss_curve_" + ".csv"
+    callbacks = [TerminateOnNaN(),
+                 LambdaCallback(on_epoch_end=lambda epoch, logs: sys.stdout.flush()),
+                 EarlyStopping(monitor='val_loss', patience=25, verbose=1, mode='auto'),
+                 ModelCheckpoint(filecp, monitor="val_loss", verbose=1, save_best_only=True, mode="auto"),
+                 CSVLogger(filecsv)]
 
-        if fold == 1:
-            print(model.summary())
+    # Train model
+    datagen = ImageDataGenerator(rotation_range=rotation_range, fill_mode='constant', cval=0.)
+    history = model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
+                                  epochs=nb_epoch, steps_per_epoch=X_train.shape[0] / batch_size,
+                                  verbose=verbose,
+                                  validation_data=(X_valid, y_valid),
+                                  callbacks=callbacks)
 
-        # Setup callbacks
-        filecp = path + "_bestweights_trial_" + str(fold) + ".hdf5"
-        filecsv = path + "_loss_curve_" + str(fold) + ".csv"
-        callbacks = [TerminateOnNaN(),
-                     LambdaCallback(on_epoch_end=lambda epoch, logs: sys.stdout.flush()),
-                     EarlyStopping(monitor='val_loss', patience=25, verbose=1, mode='auto'),
-                     ModelCheckpoint(filecp, monitor="val_loss", verbose=1, save_best_only=True, mode="auto"),
-                     CSVLogger(filecsv)]
+    # Save model and history
+    hist = history.history
+    model.save(path + modelName)
+    pickle_out = open(path + modelName + "_History" + ".pickle", "wb")
+    pickle.dump(hist, pickle_out)
+    pickle_out.close()
 
-        # Train model
-        datagen = ImageDataGenerator(rotation_range=rotation_range, fill_mode='constant', cval=0.)
-        history = model.fit_generator(datagen.flow(X_train_cv, y_train_cv, batch_size=batch_size),
-                                      epochs=nb_epoch, steps_per_epoch=X_train_cv.shape[0] / batch_size,
-                                      verbose=verbose,
-                                      validation_data=(X_valid_cv, y_valid_cv),
-                                      callbacks=callbacks)
+    with tf.device('/cpu:0'):
+        # Reload best model & compute results
+        model.load_weights(filecp)
+        cs_compute_results(model, classes=2, df_out=cv_results,
+                           train_data=(X_train, y_train),
+                           valid_data=(X_valid, y_valid),
+                           test_data=(X_test, y_test))
 
-        # Save model and history
-        hist = history.history
-        model.save(path + name)
-        pickle_out = open(path + name + "_History" + ".pickle", "wb")
-        pickle.dump(hist, pickle_out)
-        pickle_out.close()
+# Calculate results for entire CV
+final_mean = cv_results.mean(axis=0)
+final_std = cv_results.std(axis=0)
+cv_results.to_csv(path + 'results.csv', index=False)
 
-        with tf.device('/cpu:0'):
-            # Reload best model & compute results
-            model.load_weights(filecp)
-            cs_compute_results(model, classes=1, df_out=cv_results,
-                               train_data=(X_train_cv, y_train_cv),
-                               valid_data=(X_valid_cv, y_valid_cv),
-                               test_data=(X_test, y_test))
-
-    # Calculate results for entire CV
-    final_mean = cv_results.mean(axis=0)
-    final_std = cv_results.std(axis=0)
-    cv_results.to_csv(path + 'results.csv', index=False)
-
-    # Print final results
-    print('*** TRIAL RESULTS: ' + str(fold))
-    print('*** PARAMETERS TESTED: ' + str(params))
-    print(cv_results)
-
+# Print final results
+print('*** TRIAL RESULTS: ')
+print('*** PARAMETERS TESTED: ' + str(params))
+print(cv_results)

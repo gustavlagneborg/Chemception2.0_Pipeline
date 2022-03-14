@@ -16,4 +16,5 @@ Images/*/Test/*
 Images/*/Train/*
 Data/*/*
 misc/*
+SavedModels/*/*
 

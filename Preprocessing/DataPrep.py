@@ -2,8 +2,9 @@ import numpy as np
 import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import rdDepictor
+
 rdDepictor.SetPreferCoordGen(True)
-from rdkit.Chem.Descriptors import MolWt,NumRotatableBonds,HeavyAtomCount
+from rdkit.Chem.Descriptors import MolWt, NumRotatableBonds, HeavyAtomCount
 from collections import Counter
 import numpy as np
 import os
@@ -13,20 +14,25 @@ import random
 import pickle
 from rdkit.Chem import AllChem
 
+from matplotlib import pyplot as plt
 from tdc.single_pred import HTS
 from tqdm import tqdm
+
 tqdm.pandas()
+import tensorflow as tf
+
 
 def load_dataset():
     """
     Loads the HIV dataset 
     :return df: HIV dataset with renamed columns 
     """
-    data = HTS(name = 'HIV')
+    data = HTS(name='HIV')
     df = data.get_data()
-    #df.drop(['Drug'], axis=1, inplace=True)
-    df.rename(columns={'Drug_ID':'MolName','Drug':'SMILES','Y':'HIV_active'},inplace=True)
+    # df.drop(['Drug'], axis=1, inplace=True)
+    df.rename(columns={'Drug_ID': 'MolName', 'Drug': 'SMILES', 'Y': 'HIV_active'}, inplace=True)
     return df
+
 
 def commonAtoms(smi):
     """
@@ -34,7 +40,7 @@ def commonAtoms(smi):
     :param smi: molecule to be checked  
     :return df: True if common atom, otherwise false 
     """
-    commonAtomNumbers = [1,6,7,8,9,15,16,17,35,53]
+    commonAtomNumbers = [1, 6, 7, 8, 9, 15, 16, 17, 35, 53]
     mol = Chem.MolFromSmiles(smi)
     res = True
     if mol:
@@ -46,13 +52,14 @@ def commonAtoms(smi):
         res = False
     return res
 
+
 def neutralize_atoms(smi):
     """
     neutralize 
     :param smi: molecule to be checked
     :return smi: neutralized atom 
     """
-    #RDLogger.DisableLog('rdApp*')                                                                                                                                                       
+    # RDLogger.DisableLog('rdApp*')
     mol = Chem.MolFromSmiles(smi)
     pattern = Chem.MolFromSmarts("[+1!h0!$([*]~[-1,-2,-3,-4]),-1!$([*]~[+1,+2,+3,+4])]")
     at_matches = mol.GetSubstructMatches(pattern)
@@ -65,9 +72,10 @@ def neutralize_atoms(smi):
             atom.SetFormalCharge(0)
             atom.SetNumExplicitHs(hcount - chg)
             atom.UpdatePropertyCache()
-    #RDLogger.DisableLog('rdApp*')                                                                                                                                                       
+    # RDLogger.DisableLog('rdApp*')
     smi = Chem.MolToSmiles(mol)
     return smi
+
 
 def stripSalts(smi):
     """
@@ -78,6 +86,7 @@ def stripSalts(smi):
     smi_longest = smi.split(".")
     return max(smi_longest, key=len)
 
+
 def calc_3_descriptors(smi):
     """
     ...
@@ -86,11 +95,12 @@ def calc_3_descriptors(smi):
     """
     mol = Chem.MolFromSmiles(smi)
     if mol:
-        mw,rotors,hvys = [x(mol) for x in [MolWt, NumRotatableBonds, HeavyAtomCount]]
-        res = [mw,rotors,hvys]
+        mw, rotors, hvys = [x(mol) for x in [MolWt, NumRotatableBonds, HeavyAtomCount]]
+        res = [mw, rotors, hvys]
     else:
         res = [None] * 3
     return res
+
 
 def oversample(df, feature):
     """
@@ -112,7 +122,7 @@ def oversample(df, feature):
         index_lists.append(tmp_list)
         # Oversample non-max class until max count is reached
         if len(tmp_list) < maxcount:
-            index_lists.append(np.random.choice(tmp_list, size=maxcount-len(tmp_list)))#, replace=True))
+            index_lists.append(np.random.choice(tmp_list, size=maxcount - len(tmp_list)))  # , replace=True))
     index_list = np.concatenate(index_lists)
     np.random.shuffle(index_list)
 
@@ -120,65 +130,78 @@ def oversample(df, feature):
     df_oversampled = pd.DataFrame(columns=["MolName", "SMILES", "HIV_active"])
     for index in index_list:
         df_oversampled = df_oversampled.append(df.loc[index])
-    
+
     # reset index
     df_oversampled = df_oversampled.reset_index(drop=True)
-    
+
     return df_oversampled
 
+
 def tensorDataPrep(loadPath, savePath, testOrTrain):
-    data = []
+    X_data = []
+    y_data = []
     # creata train and test data
     for img in os.listdir(loadPath):
         img_array = cv2.imread(os.path.join(loadPath + img))
         img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)
         if "inactive" in img:
-            label=0
+            label = 0
         else:
-            label=1
-        data.append([img_array, label])
+            label = 1
+        X_data.append(img_array)
+        y_data.append(label)
 
-    data = pd.DataFrame(data)
+    X_data = np.array(X_data)
+    y_data = np.array(y_data)
+    if testOrTrain == "Test":
+        y_data = tf.one_hot(y_data, depth=2)
+        y_data = tf.cast(y_data, tf.int32)
+    else:
+        y_data = y_data.reshape(-1, 1)
 
-    pickle_out = open(savePath + "/" + testOrTrain + "Data" + ".pickle","wb")
-    pickle.dump(data, pickle_out)
+    pickle_out = open(savePath + "/" + "X_" + testOrTrain + ".pickle", "wb")
+    pickle.dump(X_data, pickle_out, protocol=4)
     pickle_out.close()
 
-    return data # X, y
+    pickle_out = open(savePath + "/" + "y_" + testOrTrain + ".pickle", "wb")
+    pickle.dump(y_data, pickle_out, protocol=4)
+    pickle_out.close()
+
+    return X_data, y_data  # X, y
+
 
 def chemcepterize_mol(mol, embed=20.0, res=0.5):
-    dims = int(embed*2/res)
+    dims = int(embed * 2 / res)
     cmol = Chem.Mol(mol.ToBinary())
     cmol.ComputeGasteigerCharges()
     AllChem.Compute2DCoords(cmol)
     coords = cmol.GetConformer(0).GetPositions()
-    vect = np.zeros((dims,dims,4))
-    #Bonds first
-    for i,bond in enumerate(mol.GetBonds()):
+    vect = np.zeros((dims, dims, 4))
+    # Bonds first
+    for i, bond in enumerate(mol.GetBonds()):
         bondorder = bond.GetBondTypeAsDouble()
         bidx = bond.GetBeginAtomIdx()
         eidx = bond.GetEndAtomIdx()
         bcoords = coords[bidx]
         ecoords = coords[eidx]
-        frac = np.linspace(0,1,int(1/res*2)) #
+        frac = np.linspace(0, 1, int(1 / res * 2))  #
         for f in frac:
-            c = (f*bcoords + (1-f)*ecoords)
-            idx = int(round((c[0] + embed)/res))
-            idy = int(round((c[1]+ embed)/res))
-            #Save in the vector first channel
-            vect[ idx , idy ,0] = bondorder
-    #Atom Layers
-    for i,atom in enumerate(cmol.GetAtoms()):
-            idx = int(round((coords[i][0] + embed)/res))
-            idy = int(round((coords[i][1]+ embed)/res))
-            #Atomic number
-            vect[ idx , idy, 1] = atom.GetAtomicNum()
-            #Gasteiger Charges
-            charge = atom.GetProp("_GasteigerCharge")
-            vect[ idx , idy, 3] = charge
-            #Hybridization
-            hyptype = atom.GetHybridization().real
-            vect[ idx , idy, 2] = hyptype
+            c = (f * bcoords + (1 - f) * ecoords)
+            idx = int(round((c[0] + embed) / res))
+            idy = int(round((c[1] + embed) / res))
+            # Save in the vector first channel
+            vect[idx, idy, 0] = bondorder
+    # Atom Layers
+    for i, atom in enumerate(cmol.GetAtoms()):
+        idx = int(round((coords[i][0] + embed) / res))
+        idy = int(round((coords[i][1] + embed) / res))
+        # Atomic number
+        vect[idx, idy, 1] = atom.GetAtomicNum()
+        # Gasteiger Charges
+        charge = atom.GetProp("_GasteigerCharge")
+        vect[idx, idy, 3] = charge
+        # Hybridization
+        hyptype = atom.GetHybridization().real
+        vect[idx, idy, 2] = hyptype
 
     return vect
-
