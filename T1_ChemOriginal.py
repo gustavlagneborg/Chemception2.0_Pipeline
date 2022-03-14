@@ -64,13 +64,11 @@ else:
     training_data.to_pickle(dataPath + "df_train_preprocessed.pkl")
     testing_data.to_pickle(dataPath + "df_test_preprocessed.pkl")
 
-
 X_train_and_valid = np.array(list(training_data["molimage"].values))
 y_train_and_valid = training_data["HIV_active"].values
 
 X_test = np.array(list(testing_data["molimage"].values))
 y_test = testing_data["HIV_active"].values.reshape(-1, 1)
-
 
 input_shape = X_train_and_valid.shape[1:]
 
@@ -79,10 +77,11 @@ print("Num GPUs Available: ", str(len(tf.config.list_physical_devices('GPU'))) +
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
-  try:
-    tf.config.experimental.set_virtual_device_configuration(gpus[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=3072)])
-  except RuntimeError as e:
-    print(e)
+    try:
+        tf.config.experimental.set_virtual_device_configuration(gpus[0], [
+            tf.config.experimental.VirtualDeviceConfiguration(memory_limit=3072)])
+    except RuntimeError as e:
+        print(e)
 
 model_train_AUC = []
 model_val_AUC = []
@@ -98,7 +97,7 @@ if os.path.exists(path + 'results.csv'):
 
 else:
     kfolds = 5
-    kf = StratifiedKFold(kfolds, shuffle=True, random_state=random_state)
+    kf = StratifiedKFold(kfolds)
     fold = 0
     cv_results = pd.DataFrame(
         columns=['Train Loss', 'Validation Loss', 'Test Loss', 'Train AUC', 'Validation AUC', 'Test AUC'])
@@ -133,11 +132,11 @@ else:
 
         # Train model
         datagen = ImageDataGenerator(rotation_range=rotation_range, fill_mode='constant', cval=0.)
-        history = model.fit_generator(datagen.flow(X_train_cv, y_train_cv, batch_size=batch_size),
-                                      epochs=nb_epoch, steps_per_epoch=X_train_cv.shape[0] / batch_size,
-                                      verbose=verbose,
-                                      validation_data=(X_valid_cv, y_valid_cv),
-                                      callbacks=callbacks)
+        history = model.fit(datagen.flow(X_train_cv, y_train_cv, batch_size=batch_size),
+                            epochs=nb_epoch, steps_per_epoch=X_train_cv.shape[0] / batch_size,
+                            verbose=verbose,
+                            validation_data=(X_valid_cv, y_valid_cv),
+                            callbacks=callbacks)
 
         # Save model and history
         hist = history.history
@@ -148,7 +147,7 @@ else:
 
         with tf.device('/cpu:0'):
 
-            #model = keras.models.load_model(path + name)
+            # model = keras.models.load_model(path + name)
             # train predictions
             train_y_pred_cv_pre = model.predict(X_train_cv, batch_size=batch_size)
             train_y_pred_cv = np.round(train_y_pred_cv_pre)
@@ -166,7 +165,7 @@ else:
             model_val_AUC.append(roc_auc_score(y_valid_cv, valid_y_pred_cv))
             model_test_AUC.append(roc_auc_score(y_test, test_y_pred))
 
-            #_____________________evaluation_____________________
+            # _____________________evaluation_____________________
             # train/validation/test data
 
     # Build and save evaluation dataframe
@@ -177,7 +176,7 @@ else:
     model_test_AUC.append(statistics.mean(model_test_AUC))
     model_test_AUC.append(statistics.stdev(model_test_AUC))
 
-    index = ["CV " + str(i) for i in range(1, kfolds+1)]
+    index = ["CV " + str(i) for i in range(1, kfolds + 1)]
     index.append("Average")
     index.append("Standard deviation")
 
@@ -192,8 +191,6 @@ else:
     print(f"_______________Evaluation of {modelName}_______________")
     print(eval_df)
 
-    pickle_out = open(path + modelName + "_Evaluation_df" + ".pickle","wb")
+    pickle_out = open(path + modelName + "_Evaluation_df" + ".pickle", "wb")
     pickle.dump(eval_df, pickle_out)
     pickle_out.close()
-
-

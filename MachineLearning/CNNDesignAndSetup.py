@@ -264,7 +264,6 @@ def cs_setup_cnn(params, inshape=None, classes=None):
     submodel = Model(inputs=inlayer,outputs=after_pool, name='Chemception_truncated')
     
     # Specify training method
-    optimizer = Adam(lr=0.00025)
     if classes == 1:
         model.compile(optimizer="RMSprop", loss="mean_squared_error", metrics=["accuracy"])
         submodel.compile(optimizer="RMSprop", loss="mean_squared_error", metrics=["accuracy"])
