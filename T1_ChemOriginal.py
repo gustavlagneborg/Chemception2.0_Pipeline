@@ -19,9 +19,15 @@ tf.random.set_seed(
 
 path = "SavedModels/T1_ChemOriginal/"
 dataPath = "Data/ChemOriginalArray/"
+<<<<<<< HEAD
 modelName = "T1_ChemOriginal"
 batch_size = 128
 nb_epoch = 50
+=======
+modelName = "T1_MolSmiles"
+batch_size = 32
+nb_epoch = 100
+>>>>>>> parent of 43dd5b2 (small changes)
 verbose = 1
 
 # change depending on image, 180 for mol images, 0 for others
