@@ -153,16 +153,16 @@ else:
 
             #model = keras.models.load_model(path + name)
             # train predictions
-            train_y_pred_cv = model.predict(X_train_cv, batch_size=batch_size)
-            train_y_pred_cv = np.round(train_y_pred_cv)
+            train_y_pred_cv_pre = model.predict(X_train_cv, batch_size=batch_size)
+            train_y_pred_cv = np.round(train_y_pred_cv_pre)
 
             # validiation predictions
-            valid_y_pred_cv = model.predict(X_valid_cv, batch_size=batch_size)
-            valid_y_pred_cv = np.round(valid_y_pred_cv)
+            valid_y_pred_cv_pre = model.predict(X_valid_cv, batch_size=batch_size)
+            valid_y_pred_cv = np.round(valid_y_pred_cv_pre)
 
             # test predictions (individual testset)
-            test_y_pred = model.predict(X_test, batch_size=batch_size)
-            test_y_pred = np.round(test_y_pred)
+            test_y_pred_pre = model.predict(X_test, batch_size=batch_size)
+            test_y_pred = np.round(test_y_pred_pre)
 
             # Calculating model AUC
             model_train_AUC.append(roc_auc_score(y_train_cv, train_y_pred_cv))

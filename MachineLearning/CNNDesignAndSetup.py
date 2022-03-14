@@ -265,8 +265,8 @@ def cs_setup_cnn(params, inshape=None, classes=None):
     
     # Specify training method
     if classes == 1:
-        model.compile(optimizer="RMSprop", loss="mean_squared_error")
-        submodel.compile(optimizer="RMSprop", loss="mean_squared_error")
+        model.compile(optimizer="RMSprop", loss="mean_squared_error", metrics=["accuracy"])
+        submodel.compile(optimizer="RMSprop", loss="mean_squared_error", metrics=["accuracy"])
     elif classes >= 2:
         model.compile(optimizer="RMSprop", loss="categorical_crossentropy", metrics=["accuracy"])
         submodel.compile(optimizer="RMSprop", loss="categorical_crossentropy", metrics=["accuracy"])
