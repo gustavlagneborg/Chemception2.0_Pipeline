@@ -21,7 +21,7 @@ path = "SavedModels/T1_ChemOriginal/"
 dataPath = "Data/ChemOriginalArray/"
 modelName = "T1_ChemOriginal"
 batch_size = 32
-nb_epoch = 100
+nb_epoch = 98
 verbose = 1
 
 # change depending on image, 180 for mol images, 0 for others
@@ -115,9 +115,6 @@ else:
         y_train_cv = np.asarray(y_train_and_valid[train]).reshape(-1, 1)
         X_valid_cv = np.asarray(X_train_and_valid[test])
         y_valid_cv = np.asarray(y_train_and_valid[test]).reshape(-1, 1)
-
-        print(np.isnan(X_train_cv))
-        print(np.isnan(X_valid_cv))
 
         # Building the model
         model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1)
