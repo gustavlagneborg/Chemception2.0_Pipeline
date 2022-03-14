@@ -57,7 +57,12 @@ y_test = testData.iloc[:, 1].values.reshape(-1,1)
 
 #  _____________________Check if GPU is available_____________________
 print("Num GPUs Available: ", str(len(tf.config.list_physical_devices('GPU'))) + "\n")
-sess = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(log_device_placement=True))
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+  try:
+    tf.config.experimental.set_virtual_device_configuration(gpus[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=4096)])
+  except RuntimeError as e:
+    print(e)
 
 #  _____________________Model setup and 5-fold CV_____________________
 # inspiration: https://github.com/jeffheaton/t81_558_deep_learning/blob/master/t81_558_class_05_2_kfold.ipynb
@@ -116,7 +121,7 @@ else:
                                 fill_mode="constant", cval = 0,
                                 horizontal_flip=True, vertical_flip=True, data_format='channels_last')
 
-        batch_size=32
+        batch_size=128
         g = generator.flow(X_train_cv, y_train_cv, batch_size=batch_size, shuffle=True)
         steps_per_epoch = 10000/batch_size
 

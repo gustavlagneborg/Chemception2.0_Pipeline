@@ -18,6 +18,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau
 from keras import backend as K
 import sys
+from matplotlib import pyplot as plt
 #from tensorflow.compat.v1 import ConfigProto
 #from tensorflow.compat.v1 import InteractiveSession
 
@@ -32,7 +33,7 @@ tf.random.set_seed(
 
 path = "SavedModels/T1_MolSmiles/"
 modelName = "T1_MolSmiles"
-batch_size = 32
+batch_size = 128
 nb_epoch = 100
 verbose = 1
 
@@ -85,13 +86,22 @@ y_train_and_valid = trainAndValidData.iloc[:, 1].values
 X_test = np.array(list(testData.iloc[:, 0].values))
 y_test = testData.iloc[:, 1].values.reshape(-1,1)
 
+print(trainAndValidData[1].head())
+v = X_train_and_valid[0]
+print(v.shape)
+plt.imshow(v)
+plt.show()
+
+
+
+
 #  _____________________Check if GPU is available_____________________
 print("Num GPUs Available: ", str(len(tf.config.list_physical_devices('GPU'))) + "\n")
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
   try:
-    tf.config.experimental.set_virtual_device_configuration(gpus[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=3072)])
+    tf.config.experimental.set_virtual_device_configuration(gpus[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=4096)])
   except RuntimeError as e:
     print(e)
 
@@ -119,7 +129,7 @@ if (os.path.exists(path + 'results.csv')):
 
 else:
     kfolds = 5
-    kf = StratifiedKFold(kfolds, shuffle=True, random_state=random_state) 
+    kf = StratifiedKFold(kfolds)
     fold = 0
     cv_results = pd.DataFrame(columns=['Train Loss', 'Validation Loss', 'Test Loss', 'Train AUC', 'Validation AUC', 'Test AUC'])
 
