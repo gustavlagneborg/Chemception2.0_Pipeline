@@ -27,6 +27,9 @@ nb_epoch = 50
 modelName = "T1_MolSmiles"
 batch_size = 32
 nb_epoch = 100
+<<<<<<< HEAD
+>>>>>>> parent of 43dd5b2 (small changes)
+=======
 >>>>>>> parent of 43dd5b2 (small changes)
 verbose = 1
 
