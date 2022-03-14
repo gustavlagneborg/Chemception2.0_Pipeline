@@ -13,9 +13,9 @@ import random
 import pickle
 from rdkit.Chem import AllChem
 
-from tdc.single_pred import HTS
-from tqdm import tqdm
-tqdm.pandas()
+#from tdc.single_pred import HTS
+#from tqdm import tqdm
+#tqdm.pandas()
 
 def load_dataset():
     """
