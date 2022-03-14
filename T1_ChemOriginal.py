@@ -116,9 +116,6 @@ else:
         X_valid_cv = np.asarray(X_train_and_valid[test])
         y_valid_cv = np.asarray(y_train_and_valid[test]).reshape(-1, 1)
 
-        print(np.isnan(X_train_cv))
-        print(np.isnan(X_valid_cv))
-
         # Building the model
         model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1)
 
