@@ -20,8 +20,8 @@ tf.random.set_seed(
 path = "SavedModels/T1_ChemOriginal/"
 dataPath = "Data/ChemOriginalArray/"
 modelName = "T1_ChemOriginal"
-batch_size = 32
-nb_epoch = 98
+batch_size = 128
+nb_epoch = 50
 verbose = 1
 
 # change depending on image, 180 for mol images, 0 for others
