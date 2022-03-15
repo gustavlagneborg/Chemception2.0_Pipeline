@@ -158,6 +158,12 @@ else:
                                   verbose=verbose,
                                   validation_data=(X_valid, y_valid),
                                   callbacks=callbacks)
+    """hist = model.fit(x=X_train, y=y_train,
+                     batch_size=batch_size,
+                     epochs=nb_epoch,
+                     verbose=verbose,
+                     validation_data=(X_valid, y_valid),
+                     callbacks=callbacks)"""
 
     # Visualize loss curve
     hist_df = cs_keras_to_seaborn(hist)
