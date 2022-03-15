@@ -141,7 +141,7 @@ def tensorDataPrep(loadPath, savePath, testOrTrain):
     X_data = []
     y_data = []
     # creata train and test data
-    for img in os.listdir(loadPath):
+    for img in os.listdir(loadPath)[:1000]:
         img_array = cv2.imread(os.path.join(loadPath + img))
         img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)
         if "inactive" in img:
