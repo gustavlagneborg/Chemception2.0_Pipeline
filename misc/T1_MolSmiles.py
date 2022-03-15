@@ -30,7 +30,7 @@ tf.random.set_seed(
     random_state
 )
 
-path = "SavedModels/T1_MolSmiles/"
+path = "../SavedModels/T1_MolSmiles/"
 modelName = "T1_MolSmiles"
 batch_size = 64
 nb_epoch = 100
@@ -58,12 +58,12 @@ DirTestImg = "Images/MolFromSmilesImages/Test/"
 DirTensorArray = "Data/MolFromSmilesArray/"
 
 # Loading trainig data
-if os.path.exists("Data/MolFromSmilesArray/X_Train.pickle"):
+if os.path.exists("../Data/MolFromSmilesArray/X_Train.pickle"):
     print("Local train data was found" + "\n")
-    pickle_in = open("Data/MolFromSmilesArray/X_train.pickle", "rb")
+    pickle_in = open("../Data/MolFromSmilesArray/X_Train.pickle", "rb")
     X_train_and_valid = pickle.load(pickle_in)
 
-    pickle_in = open("Data/MolFromSmilesArray/y_Train.pickle", "rb")
+    pickle_in = open("../Data/MolFromSmilesArray/y_Train.pickle", "rb")
     y_train_and_valid = pickle.load(pickle_in)
 
 else:
@@ -73,12 +73,12 @@ else:
     print("Done!")
 
     # Loading individual test data
-if os.path.exists("Data/MolFromSmilesArray/X_Test.pickle"):
+if os.path.exists("../Data/MolFromSmilesArray/X_Test.pickle"):
     print("Local test data was found" + "\n")
-    pickle_in = open("Data/MolFromSmilesArray/X_Test.pickle", "rb")
+    pickle_in = open("../Data/MolFromSmilesArray/X_Test.pickle", "rb")
     X_test = pickle.load(pickle_in)
 
-    pickle_in = open("Data/MolFromSmilesArray/y_Test.pickle", "rb")
+    pickle_in = open("../Data/MolFromSmilesArray/y_Test.pickle", "rb")
     y_test = pickle.load(pickle_in)
 
 
