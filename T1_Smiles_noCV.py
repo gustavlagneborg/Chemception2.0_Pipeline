@@ -19,9 +19,6 @@ from keras.callbacks import ReduceLROnPlateau
 from keras import backend as K
 import sys
 
-# from tensorflow.compat.v1 import ConfigProto
-# from tensorflow.compat.v1 import InteractiveSession
-
 print(tf.__version__)
 
 # configuration
@@ -91,12 +88,25 @@ else:
 X_train, X_valid, y_train, y_valid = train_test_split(X_train_and_valid, y_train_and_valid, test_size=0.2, random_state=random_state, shuffle=True)
 y_train = tf.one_hot(y_train.flatten(), depth=2)
 y_valid = tf.one_hot(y_valid.flatten(), depth=2)
+input_shape = X_train.shape[1:]
 
+# show sample of a molecule
 v = X_train_and_valid[0]
-print(v.shape)
 plt.imshow(v[:,:,:3])
 plt.show()
-input_shape = X_train.shape[1:]
+
+# print data shapes
+print("Model input shape: " + str(input_shape) + "\n")
+
+print("X_train data shape: " + str(X_train.shape))
+print("y_train data shape: " + str(y_train.shape) + "\n")
+
+print("X_validation data shape: " + str(X_valid.shape))
+print("y_validation data shape: " + str(y_valid.shape) + "\n")
+
+print("X_test data shape: " + str(X_test.shape))
+print("y_test data shape: " + str(y_test.shape) + "\n")
+
 
 #  _____________________Check if GPU is available_____________________
 print("Num GPUs Available: ", str(len(tf.config.list_physical_devices('GPU'))) + "\n")
@@ -143,14 +153,17 @@ else:
 
     # Train model
     datagen = ImageDataGenerator(rotation_range=rotation_range, fill_mode='constant', cval=0.)
-    history = model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
+    hist = model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
                                   epochs=nb_epoch, steps_per_epoch=X_train.shape[0] / batch_size,
                                   verbose=verbose,
                                   validation_data=(X_valid, y_valid),
                                   callbacks=callbacks)
+    # Visualize loss curve
+    hist_df = cs_keras_to_seaborn(hist)
+    cs_make_plots(hist_df, filename=path)
 
     # Save model and history
-    hist = history.history
+    hist = hist.history
     model.save(path + modelName)
     pickle_out = open(path + modelName + "_History" + ".pickle", "wb")
     pickle.dump(hist, pickle_out)
@@ -162,7 +175,8 @@ else:
         cs_compute_results(model, classes=2, df_out=cv_results,
                            train_data=(X_train, y_train),
                            valid_data=(X_valid, y_valid),
-                           test_data=(X_test, y_test))
+                           test_data=(X_test, y_test),
+                           filename=path)
 
     # Calculate results for entire CV
     final_mean = cv_results.mean(axis=0)

@@ -19,9 +19,6 @@ from keras.callbacks import ReduceLROnPlateau
 from keras import backend as K
 import sys
 
-# from tensorflow.compat.v1 import ConfigProto
-# from tensorflow.compat.v1 import InteractiveSession
-
 print(tf.__version__)
 
 # configuration
@@ -32,8 +29,8 @@ tf.random.set_seed(
 
 path = "SavedModels/T1_MolSmiles/"
 modelName = "T1_MolSmiles"
-batch_size = 2#64
-nb_epoch = 2#100
+batch_size = 64
+nb_epoch = 100
 verbose = 1
 
 # change depending on image, 180 for mol images, 0 for others
@@ -95,11 +92,20 @@ input_shape = X_train.shape[1:]
 
 # show sample of a molecule
 v = X_train_and_valid[0]
-print(v.shape)
 plt.imshow(v[:,:,:3])
 plt.show()
 
-# print shapes
+# print data shapes
+print("Model input shape: " + str(input_shape) + "\n")
+
+print("X_train data shape: " + str(X_train.shape))
+print("y_train data shape: " + str(y_train.shape) + "\n")
+
+print("X_validation data shape: " + str(X_valid.shape))
+print("y_validation data shape: " + str(y_valid.shape) + "\n")
+
+print("X_test data shape: " + str(X_test.shape))
+print("y_test data shape: " + str(y_test.shape) + "\n")
 
 
 #  _____________________Check if GPU is available_____________________
@@ -147,14 +153,18 @@ else:
 
     # Train model
     datagen = ImageDataGenerator(rotation_range=rotation_range, fill_mode='constant', cval=0.)
-    history = model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
+    hist = model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
                                   epochs=nb_epoch, steps_per_epoch=X_train.shape[0] / batch_size,
                                   verbose=verbose,
                                   validation_data=(X_valid, y_valid),
                                   callbacks=callbacks)
 
+    # Visualize loss curve
+    hist_df = cs_keras_to_seaborn(hist)
+    cs_make_plots(hist_df, filename=path)
+
     # Save model and history
-    hist = history.history
+    hist = hist.history
     model.save(path + modelName)
     pickle_out = open(path + modelName + "_History" + ".pickle", "wb")
     pickle.dump(hist, pickle_out)
@@ -166,7 +176,8 @@ else:
         cs_compute_results(model, classes=2, df_out=cv_results,
                            train_data=(X_train, y_train),
                            valid_data=(X_valid, y_valid),
-                           test_data=(X_test, y_test))
+                           test_data=(X_test, y_test),
+                           filename=path)
 
     # Calculate results for entire CV
     final_mean = cv_results.mean(axis=0)

@@ -1,5 +1,7 @@
 import statistics
 from numpy import std
+from tensorflow.python.keras.activations import softmax
+
 from MachineLearning.CNNDesignAndSetup import *
 from MachineLearning.evaluation import *
 from Preprocessing.DataPrep import *
@@ -18,8 +20,12 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau
 from keras import backend as K
 import sys
+import seaborn as sns
+from itertools import combinations
 
-def cs_compute_results(model, classes=None, train_data=None, valid_data=None, test_data=None, df_out=None):
+
+
+def cs_compute_results(model, classes=None, train_data=None, valid_data=None, test_data=None, df_out=None, filename=None):
     
     # Evaluate results on training set
     X_tmp = train_data[0]
@@ -61,6 +67,18 @@ def cs_compute_results(model, classes=None, train_data=None, valid_data=None, te
     elif classes == 2:
         y_preds_test = model.predict(X_tmp, batch_size=128)
         auc_test = cs_auc(y_tmp, y_preds_test)
+
+        data = {'y_Actual': np.argmax(y_tmp, axis=1),
+                'y_Predicted': np.argmax(y_preds_test, axis=1)
+                }
+
+        df = pd.DataFrame(data, columns=['y_Actual', 'y_Predicted'])
+        confusion_matrix = pd.crosstab(df['y_Actual'], df['y_Predicted'], rownames=['Actual'], colnames=['Predicted'])
+
+        matrix = sns.heatmap(confusion_matrix, annot=True)
+        matrix.figure.savefig(os.path.join(filename, 'ConfusionMatrix.png'), dpi=400)
+        plt.show()
+
     elif classes > 2:
         y_preds_test = model.predict(X_tmp, batch_size=128)
         auc_test = cs_multiclass_auc(y_tmp, y_preds_test)
@@ -94,6 +112,50 @@ def cs_compute_results(model, classes=None, train_data=None, valid_data=None, te
         df_out.loc[len(df_out)] = [loss_train, loss_valid, loss_test, auc_train, auc_valid, auc_test]
 
 
+
+
 def cs_auc(y_true, y_pred):
     auc = roc_auc_score(y_true, y_pred)
     return auc
+
+def cs_keras_to_seaborn(history):
+    tmp_frame = pd.DataFrame(history.history)
+    keys = list(history.history.keys())
+    features = [x for x in keys if "val_" not in x and "val_" + x in keys]
+    cols = ['epoch', 'phase'] + features
+    output_df = pd.DataFrame(columns=cols)
+    epoch = 1
+    for i in range(len(tmp_frame)):
+        new_row = [epoch, 'train'] + [tmp_frame.loc[i, f] for f in features]
+        output_df.loc[len(output_df)] = new_row
+        new_row = [epoch, 'validation'] + [tmp_frame.loc[i, "val_" + f] for f in features]
+        output_df.loc[len(output_df)] = new_row
+        epoch += 1
+    return output_df
+
+def cs_make_plots(hist_df, filename=None):
+    fig, axes = plt.subplots(1, 1)
+    sns.pointplot(x='epoch', y='loss', hue='phase', data=hist_df, ax=axes)
+    axes.set_title('Loss Curve', fontdict={'size': 20})
+    axes.set_ylim(np.min(hist_df['loss']), np.max(hist_df['loss']))
+    plt.show()
+    fig.savefig(os.path.join(filename, 'LossCurve.png'))
+
+def cs_multiclass_auc(y_true, y_pred):
+    n = y_pred.shape[1]
+    auc_dict = dict()
+    for pair in combinations(range(n), 2):
+        subset = [i for i in range(len(y_true)) if 1 in [y_true[i, pair[0]], y_true[i, pair[1]]]]
+        y_true_temp = y_true[subset]
+        y_pred_temp = y_pred[subset]
+        y_pred_temp = y_pred_temp[:, [pair[0], pair[1]]]
+        y_pred_temp = softmax(y_pred_temp)
+        auc_dict[pair] = roc_auc_score(y_true_temp[:, pair[1]], y_pred_temp[:, 1])
+    total = 0.0
+    for key in auc_dict.keys():
+        total += auc_dict[key]
+    total /= len(list(combinations(range(n), 2)))
+    return total
+
+
+
