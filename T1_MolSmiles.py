@@ -33,7 +33,7 @@ tf.random.set_seed(
 path = "SavedModels/T1_MolSmiles/"
 modelName = "T1_MolSmiles"
 batch_size = 64
-nb_epoch = 70
+nb_epoch = 100
 verbose = 1
 
 # change depending on image, 180 for mol images, 0 for others
