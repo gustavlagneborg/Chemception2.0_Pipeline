@@ -7,9 +7,7 @@
 /dataSources/
 /dataSources.local.xml
 # Custom ignored files
-
 *.tab
-*.pickle
 Images/*/Test/*
 Images/*/Train/*
 Data/*/*
