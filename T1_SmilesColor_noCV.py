@@ -152,12 +152,18 @@ else:
                  CSVLogger(filecsv)]
 
     # Train model
-    datagen = ImageDataGenerator(rotation_range=rotation_range, fill_mode='constant', cval=0.)
+    """datagen = ImageDataGenerator(rotation_range=rotation_range, fill_mode='constant', cval=0.)
     hist = model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
                                   epochs=nb_epoch, steps_per_epoch=X_train.shape[0] / batch_size,
                                   verbose=verbose,
                                   validation_data=(X_valid, y_valid),
-                                  callbacks=callbacks)
+                                  callbacks=callbacks)"""
+    hist = model.fit(x=X_train, y=y_train,
+                     batch_size=batch_size,
+                     epochs=nb_epoch,
+                     verbose=verbose,
+                     validation_data=(X_valid, y_valid),
+                     callbacks=callbacks)
 
     # Visualize loss curve
     hist_df = cs_keras_to_seaborn(hist)
