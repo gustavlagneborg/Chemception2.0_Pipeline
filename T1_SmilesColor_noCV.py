@@ -46,7 +46,7 @@ params = {
     'num_block1': 1,
     'num_block2': 1,
     'num_block3': 1,
-    'dropval': 0,
+    'dropval': 0.5,
 }
 
 # _____________________load or create data with if statement _____________________
@@ -158,12 +158,6 @@ else:
                                   verbose=verbose,
                                   validation_data=(X_valid, y_valid),
                                   callbacks=callbacks)
-    """hist = model.fit(x=X_train, y=y_train,
-                     batch_size=batch_size,
-                     epochs=nb_epoch,
-                     verbose=verbose,
-                     validation_data=(X_valid, y_valid),
-                     callbacks=callbacks)"""
 
     # Visualize loss curve
     hist_df = cs_keras_to_seaborn(hist)
