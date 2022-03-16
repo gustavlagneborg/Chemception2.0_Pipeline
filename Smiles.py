@@ -97,6 +97,7 @@ X_train, X_valid, y_train, y_valid = train_test_split(
 print("Data shapes before oversampling: ")
 print("X_train data shape: " + str(X_train.shape))
 print("y_train data shape: " + str(y_train.shape) + "\n")
+print("Value counts: " + str(y_train.value_counts))
 
 print("X_validation data shape: " + str(X_valid.shape))
 print("y_validation data shape: " + str(y_valid.shape) + "\n")
