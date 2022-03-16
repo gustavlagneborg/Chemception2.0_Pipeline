@@ -94,6 +94,14 @@ X_train, X_valid, y_train, y_valid = train_test_split(
                                         random_state=random_state,
                                         shuffle=True,
                                         stratify=y_train_and_valid)
+
+# print data shapes before oversampling
+print("X_train data shape: " + str(X_train.shape))
+print("y_train data shape: " + str(y_train.shape) + "\n")
+
+print("X_validation data shape: " + str(X_valid.shape))
+print("y_validation data shape: " + str(y_valid.shape) + "\n")
+
 # oversampling after split to ensure no sample leakage
 balanced_indices = cs_data_balance(y_train.flatten().tolist())
 X_train = X_train[balanced_indices]
@@ -112,17 +120,17 @@ v = X_train_and_valid[0]
 plt.imshow(v[:,:,:3])
 plt.show()
 
-# print data shapes
-print("Model input shape: " + str(input_shape) + "\n")
-
+# print data shapes after oversampling
 print("X_train data shape: " + str(X_train.shape))
 print("y_train data shape: " + str(y_train.shape) + "\n")
 
 print("X_validation data shape: " + str(X_valid.shape))
 print("y_validation data shape: " + str(y_valid.shape) + "\n")
 
+# print test data shape and input shape
 print("X_test data shape: " + str(X_test.shape))
 print("y_test data shape: " + str(y_test.shape) + "\n")
+print("Model input shape: " + str(input_shape) + "\n")
 
 
 #  _____________________Check if GPU is available_____________________
