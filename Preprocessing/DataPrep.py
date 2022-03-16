@@ -101,7 +101,6 @@ def calc_3_descriptors(smi):
         res = [None] * 3
     return res
 
-
 def oversample(df, feature):
     """
     Oversampling the minority class so the imbalance ration becomes equal

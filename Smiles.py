@@ -43,9 +43,9 @@ params = {
     'conv4_units': 32,
     'conv5_units': 32,
     'conv6_units': 32,
-    'num_block1': 3,
-    'num_block2': 3,
-    'num_block3': 3,
+    'num_block1': 1,
+    'num_block2': 1,
+    'num_block3': 1,
     'dropval': 0,
 }
 
@@ -84,8 +84,32 @@ else:
     X_test, y_test = tensorDataPrep(loadPath=DirTestImg, savePath=DirTensorArray, testOrTrain="Test")
     print("Done!")
 
+# test and valid split
+X_train, X_valid, y_train, y_valid = train_test_split(
+                                        X_train_and_valid,
+                                        y_train_and_valid,
+                                        test_size=0.2,
+                                        random_state=random_state,
+                                        shuffle=True,
+                                        stratify=y_train_and_valid)
 
-X_train, X_valid, y_train, y_valid = train_test_split(X_train_and_valid, y_train_and_valid, test_size=0.2, random_state=random_state, shuffle=True)
+# print data shapes before oversampling
+print("Data shapes before oversampling: ")
+print("X_train data shape: " + str(X_train.shape))
+print("y_train data shape: " + str(y_train.shape) + "\n")
+
+print("X_validation data shape: " + str(X_valid.shape))
+print("y_validation data shape: " + str(y_valid.shape) + "\n")
+
+# oversampling after split to ensure no sample leakage
+balanced_indices = cs_data_balance(y_train.flatten().tolist())
+X_train = X_train[balanced_indices]
+y_train = y_train[balanced_indices]
+
+balanced_indices = cs_data_balance(y_valid.flatten().tolist())
+X_valid = X_valid[balanced_indices]
+y_valid = y_valid[balanced_indices]
+
 y_train = tf.one_hot(y_train.flatten(), depth=2)
 y_valid = tf.one_hot(y_valid.flatten(), depth=2)
 input_shape = X_train.shape[1:]
@@ -95,18 +119,18 @@ v = X_train_and_valid[0]
 plt.imshow(v[:,:,:3])
 plt.show()
 
-# print data shapes
-print("Model input shape: " + str(input_shape) + "\n")
-
+# print data shapes after oversampling
+print("Data shapes after oversampling: ")
 print("X_train data shape: " + str(X_train.shape))
 print("y_train data shape: " + str(y_train.shape) + "\n")
 
 print("X_validation data shape: " + str(X_valid.shape))
 print("y_validation data shape: " + str(y_valid.shape) + "\n")
 
+# print test data shape and input shape
 print("X_test data shape: " + str(X_test.shape))
 print("y_test data shape: " + str(y_test.shape) + "\n")
-
+print("Model input shape: " + str(input_shape) + "\n")
 
 #  _____________________Check if GPU is available_____________________
 print("Num GPUs Available: ", str(len(tf.config.list_physical_devices('GPU'))) + "\n")

@@ -52,20 +52,6 @@ if (train_file_exists == False and test_file_exists == False):
     training_data = training_data.reset_index(drop=True)
     testing_data = testing_data.reset_index(drop=True)
 
-    """# oversample trainset
-    active=training_data["HIV_active"].value_counts()[1]
-    inactive=training_data["HIV_active"].value_counts()[0]
-    print(f"Class balance in training data before oversampling - HIV_active: {active} HIV_inactive {inactive}.")
-
-    training_data = oversample(training_data, "HIV_active")
-
-    active=training_data["HIV_active"].value_counts()[1]
-    inactive=training_data["HIV_active"].value_counts()[0]
-    print(f"Class balance in training data after oversampling - HIV_active: {active} HIV_inactive {inactive}.")
-    print(f"Number of compounds in training data after oversampling: {training_data.shape[0]}")
-    print(f"Number of compounds in testing data after oversampling: {testing_data.shape[0]}")
-    print(f"Number of compounds in total after preprocessing: {testing_data.shape[0] + training_data.shape[0]}")"""
-
     # Save preprocessed test and train dataset
     training_data.to_csv(path_or_buf = "data/df_train_preprocessed.csv")
     testing_data.to_csv(path_or_buf = "data/df_test_preprocessed.csv")
