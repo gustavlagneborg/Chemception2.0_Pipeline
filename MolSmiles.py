@@ -28,7 +28,7 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/MolSmiles/"
-modelName = "T3_F64_MolSmiles"
+modelName = "T1_MolSmiles"
 batch_size = 32
 nb_epoch = 100
 verbose = 1
