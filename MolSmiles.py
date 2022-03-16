@@ -43,9 +43,9 @@ params = {
     'conv4_units': 64,
     'conv5_units': 64,
     'conv6_units': 64,
-    'num_block1': 3,
-    'num_block2': 3,
-    'num_block3': 3,
+    'num_block1': 2,
+    'num_block2': 2,
+    'num_block3': 2,
     'dropval': 0,
 }
 
@@ -77,7 +77,6 @@ if os.path.exists("Data/MolFromSmilesArray/X_Test.pickle"):
 
     pickle_in = open("Data/MolFromSmilesArray/y_Test.pickle", "rb")
     y_test = pickle.load(pickle_in)
-
 
 else:
     print("Producing test data!" + "\n")
@@ -118,6 +117,9 @@ if gpus:
             tf.config.experimental.VirtualDeviceConfiguration(memory_limit=5837)])
     except RuntimeError as e:
         print(e)
+
+config = tf.compat.v1.ConfigProto(gpu_options=tf.compat.v1.GPUOptions(allow_growth=True))
+sess = tf.compat.v1.Session(config=config)
 
 #  _____________________Model setup and 5-fold CV_____________________
 # inspiration: https://github.com/jeffheaton/t81_558_deep_learning/blob/master/t81_558_class_05_2_kfold.ipynb

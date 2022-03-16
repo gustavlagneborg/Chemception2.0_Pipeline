@@ -1,4 +1,6 @@
 import statistics
+
+import pandas as pd
 from numpy import std
 from MachineLearning.CNNDesignAndSetup import *
 from MachineLearning.evaluation import *
@@ -6,7 +8,7 @@ from Preprocessing.DataPrep import *
 
 import keras
 import tensorflow as tf
-from sklearn.model_selection import StratifiedKFold, train_test_split
+from sklearn.model_selection import StratifiedKFold, train_test_split, StratifiedShuffleSplit
 from sklearn.metrics import roc_auc_score, accuracy_score
 from keras.models import Sequential, Model
 from keras.layers import Conv2D, MaxPooling2D, Input, GlobalMaxPooling2D
@@ -43,9 +45,9 @@ params = {
     'conv4_units': 16,
     'conv5_units': 16,
     'conv6_units': 16,
-    'num_block1': 3,
-    'num_block2': 3,
-    'num_block3': 3,
+    'num_block1': 2,
+    'num_block2': 2,
+    'num_block3': 2,
     'dropval': 0,
 }
 
@@ -84,8 +86,23 @@ else:
     X_test, y_test = tensorDataPrep(loadPath=DirTestImg, savePath=DirTensorArray, testOrTrain="Test")
     print("Done!")
 
+# test and valid split
+X_train, X_valid, y_train, y_valid = train_test_split(
+                                        X_train_and_valid,
+                                        y_train_and_valid,
+                                        test_size=0.2,
+                                        random_state=random_state,
+                                        shuffle=True,
+                                        stratify=y_train_and_valid)
+# oversampling after split to ensure no sample leakage
+balanced_indices = cs_data_balance(y_train.flatten().tolist())
+X_train = X_train[balanced_indices]
+y_train = y_train[balanced_indices]
 
-X_train, X_valid, y_train, y_valid = train_test_split(X_train_and_valid, y_train_and_valid, test_size=0.2, random_state=random_state, shuffle=True)
+balanced_indices = cs_data_balance(y_valid.flatten().tolist())
+X_valid = X_valid[balanced_indices]
+y_valid = y_valid[balanced_indices]
+
 y_train = tf.one_hot(y_train.flatten(), depth=2)
 y_valid = tf.one_hot(y_valid.flatten(), depth=2)
 input_shape = X_train.shape[1:]

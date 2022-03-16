@@ -28,7 +28,7 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/Smiles/"
-modelName = "Smiles"
+modelName = "T3_F16_Smiles"
 batch_size = 32
 nb_epoch = 100
 verbose = 1
@@ -43,10 +43,10 @@ params = {
     'conv4_units': 32,
     'conv5_units': 32,
     'conv6_units': 32,
-    'num_block1': 1,
-    'num_block2': 1,
-    'num_block3': 1,
-    'dropval': 0.2,
+    'num_block1': 3,
+    'num_block2': 3,
+    'num_block3': 3,
+    'dropval': 0,
 }
 
 # _____________________load or create data with if statement _____________________

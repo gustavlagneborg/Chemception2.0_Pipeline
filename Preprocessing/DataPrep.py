@@ -137,6 +137,27 @@ def oversample(df, feature):
     return df_oversampled
 
 
+def cs_data_balance(class_list):
+    # Count how many samples for each class is present
+    counts = Counter(class_list)
+
+    # Determine max class and count
+    maxclass, maxcount = Counter(class_list).most_common(1)[0]
+
+    # Construct separate list of each class to match max class and concat to single list
+    index_lists = []
+    for key in counts.keys():
+        tmp_list = [i for i in range(len(class_list)) if class_list[i] == key]
+        index_lists.append(tmp_list)
+        # Oversample non-max class until max count is reached
+        if len(tmp_list) < maxcount:
+            index_lists.append(np.random.choice(tmp_list, size=maxcount - len(tmp_list)))  # , replace=True))
+    index_list = np.concatenate(index_lists)
+    np.random.shuffle(index_list)
+
+    return index_list
+
+
 def tensorDataPrep(loadPath, savePath, testOrTrain):
     X_data = []
     y_data = []
