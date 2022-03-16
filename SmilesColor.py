@@ -27,9 +27,9 @@ tf.random.set_seed(
     random_state
 )
 
-path = "SavedModels/T1_SmilesColor/"
-modelName = "T1_SmilesColor"
-batch_size = 64
+path = "SavedModels/SmilesColor/"
+modelName = "SmilesColor"
+batch_size = 32
 nb_epoch = 100
 verbose = 1
 
@@ -37,16 +37,16 @@ verbose = 1
 rotation_range = 0
 
 params = {
-    'conv1_units': 32,
-    'conv2_units': 32,
-    'conv3_units': 32,
-    'conv4_units': 32,
-    'conv5_units': 32,
-    'conv6_units': 32,
-    'num_block1': 1,
-    'num_block2': 1,
-    'num_block3': 1,
-    'dropval': 0.5,
+    'conv1_units': 16,
+    'conv2_units': 16,
+    'conv3_units': 16,
+    'conv4_units': 16,
+    'conv5_units': 16,
+    'conv6_units': 16,
+    'num_block1': 3,
+    'num_block2': 3,
+    'num_block3': 3,
+    'dropval': 0,
 }
 
 # _____________________load or create data with if statement _____________________

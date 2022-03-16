@@ -27,9 +27,9 @@ tf.random.set_seed(
     random_state
 )
 
-path = "SavedModels/T1_MolSmiles/"
-modelName = "T1_MolSmiles"
-batch_size = 64
+path = "SavedModels/Smiles/"
+modelName = "Smiles"
+batch_size = 32
 nb_epoch = 100
 verbose = 1
 
@@ -46,21 +46,21 @@ params = {
     'num_block1': 1,
     'num_block2': 1,
     'num_block3': 1,
-    'dropval': 0,
+    'dropval': 0.2,
 }
 
 # _____________________load or create data with if statement _____________________
-DirTrainImg = "Images/MolFromSmilesImages/Train/"
-DirTestImg = "Images/MolFromSmilesImages/Test/"
-DirTensorArray = "Data/MolFromSmilesArray/"
+DirTrainImg = "Images/SmilesImages/Train/"
+DirTestImg = "Images/SmilesImages/Test/"
+DirTensorArray = "Data/SmilesArray/"
 
 # Loading trainig data
-if os.path.exists("Data/MolFromSmilesArray/X_Train.pickle"):
+if os.path.exists("Data/SmilesArray/X_Train.pickle"):
     print("Local train data was found" + "\n")
-    pickle_in = open("Data/MolFromSmilesArray/X_train.pickle", "rb")
+    pickle_in = open("Data/SmilesArray/X_train.pickle", "rb")
     X_train_and_valid = pickle.load(pickle_in)
 
-    pickle_in = open("Data/MolFromSmilesArray/y_Train.pickle", "rb")
+    pickle_in = open("Data/SmilesArray/y_Train.pickle", "rb")
     y_train_and_valid = pickle.load(pickle_in)
 
 else:
@@ -70,12 +70,12 @@ else:
     print("Done!")
 
     # Loading individual test data
-if os.path.exists("Data/MolFromSmilesArray/X_Test.pickle"):
+if os.path.exists("Data/SmilesArray/X_Test.pickle"):
     print("Local test data was found" + "\n")
-    pickle_in = open("Data/MolFromSmilesArray/X_Test.pickle", "rb")
+    pickle_in = open("Data/SmilesArray/X_Test.pickle", "rb")
     X_test = pickle.load(pickle_in)
 
-    pickle_in = open("Data/MolFromSmilesArray/y_Test.pickle", "rb")
+    pickle_in = open("Data/SmilesArray/y_Test.pickle", "rb")
     y_test = pickle.load(pickle_in)
 
 
@@ -158,7 +158,6 @@ else:
                                   verbose=verbose,
                                   validation_data=(X_valid, y_valid),
                                   callbacks=callbacks)
-
     # Visualize loss curve
     hist_df = cs_keras_to_seaborn(hist)
     cs_make_plots(hist_df, filename=path)
