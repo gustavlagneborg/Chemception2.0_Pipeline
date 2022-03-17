@@ -30,7 +30,7 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/SmilesColor/"
-modelName = "T1_SmilesColor"
+modelName = "T1_F16_SmilesColorModel"
 batch_size = 32
 nb_epoch = 100
 verbose = 1
@@ -39,12 +39,12 @@ verbose = 1
 rotation_range = 0
 
 params = {
-    'conv1_units': 32,
-    'conv2_units': 32,
-    'conv3_units': 32,
-    'conv4_units': 32,
-    'conv5_units': 32,
-    'conv6_units': 32,
+    'conv1_units': 16,
+    'conv2_units': 16,
+    'conv3_units': 16,
+    'conv4_units': 16,
+    'conv5_units': 16,
+    'conv6_units': 16,
     'num_block1': 1,
     'num_block2': 1,
     'num_block3': 1,
@@ -165,7 +165,7 @@ else:
 
 
     # Building the model
-    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2)
+    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2, lr=0.00025)
 
     print(model.summary())
 
@@ -185,6 +185,14 @@ else:
                                   verbose=verbose,
                                   validation_data=(X_valid, y_valid),
                                   callbacks=callbacks)
+
+    """hist = model.fit(x=X_train, y=y_train,
+                     batch_size=batch_size,
+                     epochs=nb_epoch,
+                     verbose=verbose,
+                     validation_data=(X_valid, y_valid),
+                     callbacks=callbacks,
+                     steps_per_epoch=X_train.shape[0] / batch_size)"""
 
     # Visualize loss curve
     hist_df = cs_keras_to_seaborn(hist)

@@ -28,7 +28,7 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/Smiles/"
-modelName = "T1_Smiles"
+modelName = "T1_F16_Smiles"
 batch_size = 32
 nb_epoch = 100
 verbose = 1
@@ -37,12 +37,12 @@ verbose = 1
 rotation_range = 0
 
 params = {
-    'conv1_units': 32,
-    'conv2_units': 32,
-    'conv3_units': 32,
-    'conv4_units': 32,
-    'conv5_units': 32,
-    'conv6_units': 32,
+    'conv1_units': 16,
+    'conv2_units': 16,
+    'conv3_units': 16,
+    'conv4_units': 16,
+    'conv5_units': 16,
+    'conv6_units': 16,
     'num_block1': 1,
     'num_block2': 1,
     'num_block3': 1,
@@ -97,7 +97,6 @@ X_train, X_valid, y_train, y_valid = train_test_split(
 print("Data shapes before oversampling: ")
 print("X_train data shape: " + str(X_train.shape))
 print("y_train data shape: " + str(y_train.shape) + "\n")
-print("Value counts: " + str(y_train.value_counts))
 
 print("X_validation data shape: " + str(X_valid.shape))
 print("y_validation data shape: " + str(y_valid.shape) + "\n")
@@ -163,7 +162,7 @@ else:
 
 
     # Building the model
-    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2)
+    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2, lr=0.00025)
 
     print(model.summary())
 

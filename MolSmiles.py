@@ -34,7 +34,7 @@ nb_epoch = 100
 verbose = 1
 
 # change depending on image, 180 for mol images, 0 for others
-rotation_range = 180
+rotation_range = 0#180
 
 params = {
     'conv1_units': 32,
@@ -206,7 +206,7 @@ else:
                            test_data=(X_test, y_test),
                            filename=path)
 
-    # Calculate results for entire CV
+    # Calculate results
     final_mean = cv_results.mean(axis=0)
     final_std = cv_results.std(axis=0)
     cv_results.to_csv(path + 'results.csv', index=False)

@@ -174,7 +174,7 @@ def end_block_pool(input_tensor):
     return(input_tensor, x)
 
 
-def cs_setup_cnn(params, inshape=None, classes=None):
+def cs_setup_cnn(params, inshape=None, classes=None, lr=0.001):
     """Instantiate the Inception v3 architecture,
     optionally loading weights pre-trained
     on ImageNet. Note that when using TensorFlow,
@@ -264,6 +264,7 @@ def cs_setup_cnn(params, inshape=None, classes=None):
     submodel = Model(inputs=inlayer,outputs=after_pool, name='Chemception_truncated')
     
     # Specify training method
+    optimizer = RMSprop(lr=lr)
     if classes == 1:
         model.compile(optimizer="RMSprop", loss="mean_squared_error", metrics=["accuracy"])
         submodel.compile(optimizer="RMSprop", loss="mean_squared_error", metrics=["accuracy"])
