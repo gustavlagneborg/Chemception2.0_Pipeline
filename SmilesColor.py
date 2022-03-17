@@ -98,11 +98,9 @@ X_train, X_valid, y_train, y_valid = train_test_split(
 print("Data shapes before oversampling: ")
 print("X_train data shape: " + str(X_train.shape))
 print("y_train data shape: " + str(y_train.shape) + "\n")
-print("Class balance in train data: " + str(pd.DataFrame(y_train.flatten().tolist()).value_counts()) + "\n")
 
 print("X_validation data shape: " + str(X_valid.shape))
 print("y_validation data shape: " + str(y_valid.shape) + "\n")
-print("Class balance in validation data: " + str(pd.DataFrame(y_valid.flatten().tolist()).value_counts()) + "\n")
 
 # oversampling after split to ensure no sample leakage
 balanced_indices = cs_data_balance(y_train.flatten().tolist())
@@ -114,7 +112,9 @@ X_valid = X_valid[balanced_indices]
 y_valid = y_valid[balanced_indices]
 
 y_train = tf.one_hot(y_train.flatten(), depth=2)
+y_train = tf.cast(y_train, tf.int32)
 y_valid = tf.one_hot(y_valid.flatten(), depth=2)
+y_valid = tf.cast(y_valid, tf.int32)
 input_shape = X_train.shape[1:]
 
 # show sample of a molecule
@@ -126,7 +126,6 @@ plt.show()
 print("Data shapes after oversampling: ")
 print("X_train data shape: " + str(X_train.shape))
 print("y_train data shape: " + str(y_train.shape) + "\n")
-print("Class balance in train data: " + str(pd.DataFrame(y_train.flatten().tolist()).value_counts()) + "\n")
 
 print("X_validation data shape: " + str(X_valid.shape))
 print("y_validation data shape: " + str(y_valid.shape) + "\n")
@@ -135,7 +134,6 @@ print("y_validation data shape: " + str(y_valid.shape) + "\n")
 print("X_test data shape: " + str(X_test.shape))
 print("y_test data shape: " + str(y_test.shape) + "\n")
 print("Model input shape: " + str(input_shape) + "\n")
-print("Class balance in validation data: " + str(pd.DataFrame(y_valid.flatten().tolist()).value_counts()) + "\n")
 
 
 #  _____________________Check if GPU is available_____________________

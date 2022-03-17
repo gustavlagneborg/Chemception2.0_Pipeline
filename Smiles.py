@@ -111,8 +111,11 @@ X_valid = X_valid[balanced_indices]
 y_valid = y_valid[balanced_indices]
 
 y_train = tf.one_hot(y_train.flatten(), depth=2)
+y_train = tf.cast(y_train, tf.int32)
 y_valid = tf.one_hot(y_valid.flatten(), depth=2)
+y_valid = tf.cast(y_valid, tf.int32)
 input_shape = X_train.shape[1:]
+
 
 # show sample of a molecule
 v = X_train_and_valid[0]
