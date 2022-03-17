@@ -13,7 +13,6 @@ from sklearn.metrics import roc_auc_score, accuracy_score
 from keras.models import Sequential, Model
 from keras.layers import Conv2D, MaxPooling2D, Input, GlobalMaxPooling2D
 from keras.layers.core import Dense, Dropout, Activation, Flatten
-from tensorflow.keras.optimizers import Adam
 from keras.callbacks import TerminateOnNaN, EarlyStopping, ReduceLROnPlateau, CSVLogger, ModelCheckpoint
 from keras.callbacks import ModelCheckpoint, EarlyStopping, Callback, LearningRateScheduler, LambdaCallback
 from keras.preprocessing.image import ImageDataGenerator
@@ -30,7 +29,7 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/SmilesColor/"
-modelName = "T1_F16_SmilesColorModel"
+modelName = "T1_F16_SmilesColorModel_lr0.00025"
 batch_size = 32
 nb_epoch = 100
 verbose = 1
@@ -142,9 +141,17 @@ gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
     try:
         tf.config.experimental.set_virtual_device_configuration(gpus[0], [
-            tf.config.experimental.VirtualDeviceConfiguration(memory_limit=5837)])
+            tf.config.experimental.VirtualDeviceConfiguration(memory_limit=10444)])
     except RuntimeError as e:
         print(e)
+
+physical_devices = tf.config.list_physical_devices('GPU')
+
+try:
+    tf.config.experimental.set_memory_growth(physical_devices[0], True)
+except:
+    # Invalid device or cannot modify virtual devices once initialized.
+    pass
 
 #  _____________________Model setup and 5-fold CV_____________________
 # inspiration: https://github.com/jeffheaton/t81_558_deep_learning/blob/master/t81_558_class_05_2_kfold.ipynb
@@ -156,7 +163,7 @@ if (os.path.exists(path + 'results.csv')):
     print(eval_df)
 
 else:
-
+    
     cv_results = pd.DataFrame(
         columns=['Train Loss', 'Validation Loss', 'Test Loss', 'Train AUC', 'Validation AUC', 'Test AUC'])
 
@@ -179,20 +186,12 @@ else:
                  CSVLogger(filecsv)]
 
     # Train model
-    datagen = ImageDataGenerator(rotation_range=rotation_range, fill_mode='constant', cval=0.)
+    datagen = ImageDataGenerator()
     hist = model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
                                   epochs=nb_epoch, steps_per_epoch=X_train.shape[0] / batch_size,
                                   verbose=verbose,
                                   validation_data=(X_valid, y_valid),
                                   callbacks=callbacks)
-
-    """hist = model.fit(x=X_train, y=y_train,
-                     batch_size=batch_size,
-                     epochs=nb_epoch,
-                     verbose=verbose,
-                     validation_data=(X_valid, y_valid),
-                     callbacks=callbacks,
-                     steps_per_epoch=X_train.shape[0] / batch_size)"""
 
     # Visualize loss curve
     hist_df = cs_keras_to_seaborn(hist)

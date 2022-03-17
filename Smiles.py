@@ -143,6 +143,9 @@ if gpus:
     except RuntimeError as e:
         print(e)
 
+config = tf.compat.v1.ConfigProto(gpu_options=tf.compat.v1.GPUOptions(allow_growth=True))
+sess = tf.compat.v1.Session(config=config)
+
 #  _____________________Model setup and 5-fold CV_____________________
 # inspiration: https://github.com/jeffheaton/t81_558_deep_learning/blob/master/t81_558_class_05_2_kfold.ipynb
 if (os.path.exists(path + 'results.csv')):
@@ -176,7 +179,7 @@ else:
                  CSVLogger(filecsv)]
 
     # Train model
-    datagen = ImageDataGenerator(rotation_range=rotation_range, fill_mode='constant', cval=0.)
+    datagen = ImageDataGenerator()
     hist = model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
                                   epochs=nb_epoch, steps_per_epoch=X_train.shape[0] / batch_size,
                                   verbose=verbose,
