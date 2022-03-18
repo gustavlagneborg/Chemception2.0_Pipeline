@@ -1,3 +1,5 @@
+import re
+
 import numpy as np
 import pandas as pd
 from rdkit import Chem
@@ -160,7 +162,7 @@ def cs_data_balance(class_list):
 def tensorDataPrep(loadPath, savePath, testOrTrain):
     X_data = []
     y_data = []
-    # creata train and test data
+    # creata train and test HivData
     for img in os.listdir(loadPath):
         img_array = cv2.imread(os.path.join(loadPath + img))
         img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)
@@ -178,6 +180,31 @@ def tensorDataPrep(loadPath, savePath, testOrTrain):
         y_data = tf.cast(y_data, tf.int32)
     else:
         y_data = y_data.reshape(-1, 1)
+
+    pickle_out = open(savePath + "/" + "X_" + testOrTrain + ".pickle", "wb")
+    pickle.dump(X_data, pickle_out, protocol=4)
+    pickle_out.close()
+
+    pickle_out = open(savePath + "/" + "y_" + testOrTrain + ".pickle", "wb")
+    pickle.dump(y_data, pickle_out, protocol=4)
+    pickle_out.close()
+
+    return X_data, y_data  # X, y
+
+def tensorDataPreRegression(loadPath, savePath, testOrTrain):
+    X_data = []
+    y_data = []
+    # creata train and test LipophilicityData
+    for img in os.listdir(loadPath):
+        img_array = cv2.imread(os.path.join(loadPath + img))
+        img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)
+        label = re.search("y(.*)_", img)
+        label = label.group(1)
+        X_data.append(img_array)
+        y_data.append(float(label))
+
+    X_data = np.array(X_data)
+    y_data = np.array(y_data)
 
     pickle_out = open(savePath + "/" + "X_" + testOrTrain + ".pickle", "wb")
     pickle.dump(X_data, pickle_out, protocol=4)

@@ -12,9 +12,9 @@
 *.png
 *.jpeg
 *.pickle
-Images/*/Test/*
-Images/*/Train/*
-Data/*/*
+HIVImages/*/Test/*
+HIVImages/*/Train/*
+HivData/*/*
 SavedModels/*/*
 .idea/
 

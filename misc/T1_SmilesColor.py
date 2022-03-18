@@ -51,30 +51,30 @@ params = {
     'dropval': 0, 
 }
 
-# _____________________load or create data with if statement _____________________
-DirTrainImg = "Images/SmilesColorImages/Train/"
-DirTestImg = "Images/SmilesColorImages/Test/"
+# _____________________load or create HivData with if statement _____________________
+DirTrainImg = "HIVImages/SmilesColorImages/Train/"
+DirTestImg = "HIVImages/SmilesColorImages/Test/"
 DirTrainArray = "Data/SmilesColorArray/"
 DirTestArray = "Data/SmilesColorArray/"
 
-# Loading trainig data
+# Loading trainig HivData
 if (os.path.exists("Data/SmilesColorArray/trainData.pickle")):
-    print("Local train data was found" + "\n")
+    print("Local train HivData was found" + "\n")
     pickle_in = open("Data/SmilesColorArray/trainData.pickle","rb")
     trainAndValidData = pickle.load(pickle_in)
 
 else:
-    print("Producing train data!" + "\n")
+    print("Producing train HivData!" + "\n")
     trainAndValidData = tensorDataPrep(loadPath=DirTrainImg, savePath=DirTrainArray, testOrTrain="Train")
     print("Done!")
 
-    # Loading individual test data
+    # Loading individual test HivData
 if (os.path.exists("Data/SmilesColorArray/testData.pickle")):
-    print("Local test data was found" + "\n")
+    print("Local test HivData was found" + "\n")
     pickle_in = open("Data/SmilesColorArray/testData.pickle","rb")
     testData = pickle.load(pickle_in)
 else:
-    print("Producing test data!" + "\n")
+    print("Producing test HivData!" + "\n")
     testData = tensorDataPrep(loadPath=DirTestImg, savePath=DirTestArray, testOrTrain="Test")
     print("Done!")
 
@@ -215,7 +215,7 @@ else:
         
 
     #_____________________evaluation_____________________
-    # train/validation/test data
+    # train/validation/test HivData
 
     # Build and save evaluation dataframe
     model_train_accuarcy.append(statistics.mean(model_train_accuarcy))
