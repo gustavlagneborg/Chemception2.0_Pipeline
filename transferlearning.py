@@ -192,3 +192,21 @@ filecp = "path for pre trained weights"
 model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1)
 print(model.summary())
 model.load_weights(filecp)
+
+# train..
+
+cs_compute_results(model, classes=2, df_out=results,
+                           train_data=(X_train, y_train),
+                           valid_data=(X_valid, y_valid),
+                           test_data=(X_test, y_test),
+                           filename=path)
+
+# Calculate results for entire CV
+final_mean = results.mean(axis=0)
+final_std = results.std(axis=0)
+results.to_csv(path + 'results.csv', index=False)
+
+# Print final results
+print('*** TRIAL RESULTS: ')
+print('*** PARAMETERS TESTED: ' + str(params))
+print(results)
