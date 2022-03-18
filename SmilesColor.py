@@ -89,7 +89,7 @@ else:
 X_train, X_valid, y_train, y_valid = train_test_split(
                                         X_train_and_valid,
                                         y_train_and_valid,
-                                        test_size=0.2,
+                                        test_size=0.3,
                                         random_state=random_state,
                                         shuffle=True,
                                         stratify=y_train_and_valid)

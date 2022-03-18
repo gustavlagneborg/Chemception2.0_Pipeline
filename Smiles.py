@@ -28,7 +28,7 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/Smiles/"
-modelName = "T1_F16_Smiles"
+modelName = "T3_Smiles"
 batch_size = 32
 nb_epoch = 100
 verbose = 1
@@ -46,7 +46,7 @@ params = {
     'num_block1': 1,
     'num_block2': 1,
     'num_block3': 1,
-    'dropval': 0,
+    'dropval': 0.8,
 }
 
 # _____________________load or create data with if statement _____________________
@@ -88,7 +88,7 @@ else:
 X_train, X_valid, y_train, y_valid = train_test_split(
                                         X_train_and_valid,
                                         y_train_and_valid,
-                                        test_size=0.2,
+                                        test_size=0.3,
                                         random_state=random_state,
                                         shuffle=True,
                                         stratify=y_train_and_valid)

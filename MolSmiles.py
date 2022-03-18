@@ -28,7 +28,7 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/MolSmiles/"
-modelName = "T1_MolSmiles"
+modelName = "T3_F16_MolSmiles"
 batch_size = 32
 nb_epoch = 100
 verbose = 1
@@ -37,16 +37,16 @@ verbose = 1
 rotation_range = 180
 
 params = {
-    'conv1_units': 32,
-    'conv2_units': 32,
-    'conv3_units': 32,
-    'conv4_units': 32,
-    'conv5_units': 32,
-    'conv6_units': 32,
-    'num_block1': 1,
-    'num_block2': 1,
-    'num_block3': 1,
-    'dropval': 0,
+    'conv1_units': 16,
+    'conv2_units': 16,
+    'conv3_units': 16,
+    'conv4_units': 16,
+    'conv5_units': 16,
+    'conv6_units': 16,
+    'num_block1': 3,
+    'num_block2': 3,
+    'num_block3': 3,
+    'dropval': 0.5,
 }
 
 # _____________________load or create data with if statement _____________________
@@ -87,7 +87,7 @@ else:
 X_train, X_valid, y_train, y_valid = train_test_split(
                                         X_train_and_valid,
                                         y_train_and_valid,
-                                        test_size=0.2,
+                                        test_size=0.3,
                                         random_state=random_state,
                                         shuffle=True,
                                         stratify=y_train_and_valid)
@@ -181,8 +181,8 @@ else:
                  ModelCheckpoint(filecp, monitor="val_loss", verbose=1, save_best_only=True, mode="auto"),
                  CSVLogger(filecsv)]
 
-    # Train model
-    datagen = ImageDataGenerator(rotation_range=rotation_range, fill_mode='constant', cval=0.)
+    # Train model - rotation_range=rotation_range, fill_mode='constant', cval=0.
+    datagen = ImageDataGenerator()
     hist = model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
                                   epochs=nb_epoch, steps_per_epoch=X_train.shape[0] / batch_size,
                                   verbose=verbose,
