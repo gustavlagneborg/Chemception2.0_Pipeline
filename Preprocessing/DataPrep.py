@@ -160,7 +160,7 @@ def cs_data_balance(class_list):
 def tensorDataPrep(loadPath, savePath, testOrTrain):
     X_data = []
     y_data = []
-    # creata train and test data
+    # creata train and test HivData
     for img in os.listdir(loadPath):
         img_array = cv2.imread(os.path.join(loadPath + img))
         img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)

@@ -52,38 +52,38 @@ params = {
     'dropval': 0,
 }
 
-# _____________________load or create data with if statement _____________________
+# _____________________load or create HivData with if statement _____________________
 DirTrainImg = "Images/MolFromSmilesImages/Train/"
 DirTestImg = "Images/MolFromSmilesImages/Test/"
 DirTensorArray = "Data/MolFromSmilesArray/"
 
-# Loading trainig data
+# Loading trainig HivData
 if os.path.exists("../Data/MolFromSmilesArray/X_Train.pickle"):
-    print("Local train data was found" + "\n")
-    pickle_in = open("../Data/MolFromSmilesArray/X_Train.pickle", "rb")
+    print("Local train HivData was found" + "\n")
+    pickle_in = open("../HivData/MolFromSmilesArray/X_Train.pickle", "rb")
     X_train_and_valid = pickle.load(pickle_in)
 
-    pickle_in = open("../Data/MolFromSmilesArray/y_Train.pickle", "rb")
+    pickle_in = open("../HivData/MolFromSmilesArray/y_Train.pickle", "rb")
     y_train_and_valid = pickle.load(pickle_in)
 
 else:
-    print("Producing train data!" + "\n")
+    print("Producing train HivData!" + "\n")
     X_train_and_valid, y_train_and_valid = tensorDataPrep(loadPath=DirTrainImg, savePath=DirTensorArray,
                                                           testOrTrain="Train")
     print("Done!")
 
-    # Loading individual test data
+    # Loading individual test HivData
 if os.path.exists("../Data/MolFromSmilesArray/X_Test.pickle"):
-    print("Local test data was found" + "\n")
-    pickle_in = open("../Data/MolFromSmilesArray/X_Test.pickle", "rb")
+    print("Local test HivData was found" + "\n")
+    pickle_in = open("../HivData/MolFromSmilesArray/X_Test.pickle", "rb")
     X_test = pickle.load(pickle_in)
 
-    pickle_in = open("../Data/MolFromSmilesArray/y_Test.pickle", "rb")
+    pickle_in = open("../HivData/MolFromSmilesArray/y_Test.pickle", "rb")
     y_test = pickle.load(pickle_in)
 
 
 else:
-    print("Producing test data!" + "\n")
+    print("Producing test HivData!" + "\n")
     X_test, y_test = tensorDataPrep(loadPath=DirTestImg, savePath=DirTensorArray, testOrTrain="Test")
     print("Done!")
 
@@ -124,12 +124,12 @@ else:
 
         name = modelName + "_" + str(fold)
 
-        # train data
+        # train HivData
         X_train_cv = np.asarray(X_train_and_valid[train])
         y_train_cv = np.asarray(y_train_and_valid[train])
         y_train_cv = tf.one_hot(y_train_cv.flatten(), depth=2)
 
-        # validation data
+        # validation HivData
         X_valid_cv = np.asarray(X_train_and_valid[test])
         y_valid_cv = np.asarray(y_train_and_valid[test])
         y_valid_cv = tf.one_hot(y_valid_cv.flatten(), depth=2)

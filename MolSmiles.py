@@ -49,37 +49,37 @@ params = {
     'dropval': 0.5,
 }
 
-# _____________________load or create data with if statement _____________________
+# _____________________load or create HivData with if statement _____________________
 DirTrainImg = "Images/MolFromSmilesImages/Train/"
 DirTestImg = "Images/MolFromSmilesImages/Test/"
 DirTensorArray = "Data/MolFromSmilesArray/"
 
-# Loading trainig data
+# Loading trainig HivData
 if os.path.exists("Data/MolFromSmilesArray/X_Train.pickle"):
-    print("Local train data was found" + "\n")
-    pickle_in = open("Data/MolFromSmilesArray/X_train.pickle", "rb")
+    print("Local train HivData was found" + "\n")
+    pickle_in = open("HivData/MolFromSmilesArray/X_train.pickle", "rb")
     X_train_and_valid = pickle.load(pickle_in)
 
-    pickle_in = open("Data/MolFromSmilesArray/y_Train.pickle", "rb")
+    pickle_in = open("HivData/MolFromSmilesArray/y_Train.pickle", "rb")
     y_train_and_valid = pickle.load(pickle_in)
 
 else:
-    print("Producing train data!" + "\n")
+    print("Producing train HivData!" + "\n")
     X_train_and_valid, y_train_and_valid = tensorDataPrep(loadPath=DirTrainImg, savePath=DirTensorArray,
                                                           testOrTrain="Train")
     print("Done!")
 
-    # Loading individual test data
+    # Loading individual test HivData
 if os.path.exists("Data/MolFromSmilesArray/X_Test.pickle"):
-    print("Local test data was found" + "\n")
-    pickle_in = open("Data/MolFromSmilesArray/X_Test.pickle", "rb")
+    print("Local test HivData was found" + "\n")
+    pickle_in = open("HivData/MolFromSmilesArray/X_Test.pickle", "rb")
     X_test = pickle.load(pickle_in)
 
-    pickle_in = open("Data/MolFromSmilesArray/y_Test.pickle", "rb")
+    pickle_in = open("HivData/MolFromSmilesArray/y_Test.pickle", "rb")
     y_test = pickle.load(pickle_in)
 
 else:
-    print("Producing test data!" + "\n")
+    print("Producing test HivData!" + "\n")
     X_test, y_test = tensorDataPrep(loadPath=DirTestImg, savePath=DirTensorArray, testOrTrain="Test")
     print("Done!")
 
@@ -92,13 +92,13 @@ X_train, X_valid, y_train, y_valid = train_test_split(
                                         shuffle=True,
                                         stratify=y_train_and_valid)
 
-# print data shapes before oversampling
+# print HivData shapes before oversampling
 print("Data shapes before oversampling: ")
-print("X_train data shape: " + str(X_train.shape))
-print("y_train data shape: " + str(y_train.shape) + "\n")
+print("X_train HivData shape: " + str(X_train.shape))
+print("y_train HivData shape: " + str(y_train.shape) + "\n")
 
-print("X_validation data shape: " + str(X_valid.shape))
-print("y_validation data shape: " + str(y_valid.shape) + "\n")
+print("X_validation HivData shape: " + str(X_valid.shape))
+print("y_validation HivData shape: " + str(y_valid.shape) + "\n")
 
 # oversampling after split to ensure no sample leakage
 balanced_indices = cs_data_balance(y_train.flatten().tolist())
@@ -121,17 +121,17 @@ v = X_train_and_valid[0]
 plt.imshow(v[:,:,:3])
 plt.show()
 
-# print data shapes after oversampling
+# print HivData shapes after oversampling
 print("Data shapes after oversampling: ")
-print("X_train data shape: " + str(X_train.shape))
-print("y_train data shape: " + str(y_train.shape) + "\n")
+print("X_train HivData shape: " + str(X_train.shape))
+print("y_train HivData shape: " + str(y_train.shape) + "\n")
 
-print("X_validation data shape: " + str(X_valid.shape))
-print("y_validation data shape: " + str(y_valid.shape) + "\n")
+print("X_validation HivData shape: " + str(X_valid.shape))
+print("y_validation HivData shape: " + str(y_valid.shape) + "\n")
 
-# print test data shape and input shape
-print("X_test data shape: " + str(X_test.shape))
-print("y_test data shape: " + str(y_test.shape) + "\n")
+# print test HivData shape and input shape
+print("X_test HivData shape: " + str(X_test.shape))
+print("y_test HivData shape: " + str(y_test.shape) + "\n")
 print("Model input shape: " + str(input_shape) + "\n")
 
 

@@ -53,12 +53,12 @@ if (train_file_exists == False and test_file_exists == False):
     testing_data = testing_data.reset_index(drop=True)
 
     # Save preprocessed test and train dataset
-    training_data.to_csv(path_or_buf = "data/df_train_preprocessed.csv")
-    testing_data.to_csv(path_or_buf = "data/df_test_preprocessed.csv")
+    training_data.to_csv(path_or_buf ="HivData/df_train_preprocessed.csv")
+    testing_data.to_csv(path_or_buf ="HivData/df_test_preprocessed.csv")
 else:
     print("Found local preprocessed dataframe")
-    training_data = pd.read_csv("data/df_train_preprocessed.csv", index_col=[0]).reset_index(drop=True)
-    testing_data = pd.read_csv("data/df_test_preprocessed.csv", index_col=[0]).reset_index(drop=True)
+    training_data = pd.read_csv("HivData/df_train_preprocessed.csv", index_col=[0]).reset_index(drop=True)
+    testing_data = pd.read_csv("HivData/df_test_preprocessed.csv", index_col=[0]).reset_index(drop=True)
 
 # creating a list of inactive and active compounds
 df_inactives_train = training_data.loc[(training_data['HIV_active'] == 0)].reset_index(drop=True)

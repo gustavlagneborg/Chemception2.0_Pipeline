@@ -14,7 +14,7 @@
 *.pickle
 Images/*/Test/*
 Images/*/Train/*
-Data/*/*
+HivData/*/*
 SavedModels/*/*
 .idea/
 
