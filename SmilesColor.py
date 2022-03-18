@@ -29,8 +29,8 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/SmilesColor/"
-modelName = "T3_F16_SmilesColorModel_lr0.00025_Dropout0.5"
-batch_size = 32
+modelName = "T1_SmilesColorModel"
+batch_size = 80
 nb_epoch = 100
 verbose = 1
 
@@ -38,15 +38,15 @@ verbose = 1
 rotation_range = 0
 
 params = {
-    'conv1_units': 16,
-    'conv2_units': 16,
-    'conv3_units': 16,
-    'conv4_units': 16,
-    'conv5_units': 16,
-    'conv6_units': 16,
-    'num_block1': 3,
-    'num_block2': 3,
-    'num_block3': 3,
+    'conv1_units': 32,
+    'conv2_units': 32,
+    'conv3_units': 32,
+    'conv4_units': 32,
+    'conv5_units': 32,
+    'conv6_units': 32,
+    'num_block1': 1,
+    'num_block2': 1,
+    'num_block3': 1,
     'dropval': 0.5,
 }
 
@@ -143,7 +143,7 @@ gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
     try:
         tf.config.experimental.set_virtual_device_configuration(gpus[0], [
-            tf.config.experimental.VirtualDeviceConfiguration(memory_limit=10444)])
+            tf.config.experimental.VirtualDeviceConfiguration(memory_limit=5837)])
     except RuntimeError as e:
         print(e)
 
@@ -174,7 +174,7 @@ else:
 
 
     # Building the model
-    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2, lr=0.00025)
+    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2, lr=0.00005)
 
     print(model.summary())
 

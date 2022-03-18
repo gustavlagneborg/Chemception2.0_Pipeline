@@ -11,7 +11,6 @@ from sklearn.metrics import roc_auc_score, accuracy_score
 from keras.models import Sequential, Model
 from keras.layers import Conv2D, MaxPooling2D, Input, GlobalMaxPooling2D
 from keras.layers.core import Dense, Dropout, Activation, Flatten
-from tensorflow.keras.optimizers import Adam
 from keras.callbacks import TerminateOnNaN, EarlyStopping, ReduceLROnPlateau, CSVLogger, ModelCheckpoint
 from keras.callbacks import ModelCheckpoint, EarlyStopping, Callback, LearningRateScheduler, LambdaCallback
 from keras.preprocessing.image import ImageDataGenerator
@@ -28,8 +27,8 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/Smiles/"
-modelName = "T3_Smiles"
-batch_size = 32
+modelName = "T1_Smilesmodel"
+batch_size = 80
 nb_epoch = 100
 verbose = 1
 
@@ -37,16 +36,16 @@ verbose = 1
 rotation_range = 0
 
 params = {
-    'conv1_units': 16,
-    'conv2_units': 16,
-    'conv3_units': 16,
-    'conv4_units': 16,
-    'conv5_units': 16,
-    'conv6_units': 16,
+    'conv1_units': 32,
+    'conv2_units': 32,
+    'conv3_units': 32,
+    'conv4_units': 32,
+    'conv5_units': 32,
+    'conv6_units': 32,
     'num_block1': 1,
     'num_block2': 1,
     'num_block3': 1,
-    'dropval': 0.8,
+    'dropval': 0.5,
 }
 
 # _____________________load or create data with if statement _____________________
@@ -168,7 +167,7 @@ else:
 
 
     # Building the model
-    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2, lr=0.00025)
+    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2, lr=0.00005)
 
     print(model.summary())
 

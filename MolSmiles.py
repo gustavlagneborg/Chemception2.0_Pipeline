@@ -28,8 +28,8 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/MolSmiles/"
-modelName = "T3_F16_MolSmiles"
-batch_size = 32
+modelName = "T3_F32_MolSmiles"
+batch_size = 48
 nb_epoch = 100
 verbose = 1
 
@@ -37,16 +37,16 @@ verbose = 1
 rotation_range = 180
 
 params = {
-    'conv1_units': 16,
-    'conv2_units': 16,
-    'conv3_units': 16,
-    'conv4_units': 16,
-    'conv5_units': 16,
-    'conv6_units': 16,
+    'conv1_units': 32,
+    'conv2_units': 32,
+    'conv3_units': 32,
+    'conv4_units': 32,
+    'conv5_units': 32,
+    'conv6_units': 32,
     'num_block1': 3,
     'num_block2': 3,
     'num_block3': 3,
-    'dropval': 0.5,
+    'dropval': 0.6,
 }
 
 # _____________________load or create data with if statement _____________________
