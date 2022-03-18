@@ -53,10 +53,10 @@ params = {
 # _____________________load or create HivData with if statement _____________________
 DirTrainImg = "HIVImages/SmilesColorImages/Train/"
 DirTestImg = "HIVImages/SmilesColorImages/Test/"
-DirTensorArray = "Data/SmilesColorArray/"
+DirTensorArray = "HivData/SmilesColorArray/"
 
 # Loading trainig HivData
-if os.path.exists("Data/SmilesColorArray/X_Train.pickle"):
+if os.path.exists("HivData/SmilesColorArray/X_Train.pickle"):
     print("Local train HivData was found" + "\n")
     pickle_in = open("HivData/SmilesColorArray/X_train.pickle", "rb")
     X_train_and_valid = pickle.load(pickle_in)
@@ -71,14 +71,13 @@ else:
     print("Done!")
 
     # Loading individual test HivData
-if os.path.exists("Data/SmilesColorArray/X_Test.pickle"):
+if os.path.exists("HivData/SmilesColorArray/X_Test.pickle"):
     print("Local test HivData was found" + "\n")
     pickle_in = open("HivData/SmilesColorArray/X_Test.pickle", "rb")
     X_test = pickle.load(pickle_in)
 
     pickle_in = open("HivData/SmilesColorArray/y_Test.pickle", "rb")
     y_test = pickle.load(pickle_in)
-
 
 else:
     print("Producing test HivData!" + "\n")
@@ -169,7 +168,7 @@ else:
     cv_results = pd.DataFrame(
         columns=['Train Loss', 'Validation Loss', 'Test Loss', 'Train AUC', 'Validation AUC', 'Test AUC'])
 
-    print("______________Training model - 5 fold CV______________")
+    print("______________Training model______________")
     print()
 
 

@@ -5,8 +5,8 @@ from sklearn.model_selection import train_test_split
 
 random_state = 125
 
-train_file_exists = os.path.exists('Data/df_train_preprocessed.csv')
-test_file_exists = os.path.exists('Data/df_test_preprocessed.csv')
+train_file_exists = os.path.exists('HivData/df_train_preprocessed.csv')
+test_file_exists = os.path.exists('HivData/df_test_preprocessed.csv')
 
 if (train_file_exists == False and test_file_exists == False):
     # get dataset

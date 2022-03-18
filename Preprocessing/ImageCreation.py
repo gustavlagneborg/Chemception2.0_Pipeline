@@ -269,8 +269,12 @@ def generateImageSMILEColor(path, compoundList, HIV_activity, withChars=True):
         smi = str(compound["SMILES"])
         mol = Chem.MolFromSmiles(smi)
         smi = Chem.MolToSmiles(mol)
-       
-        filename = path + compound["MolName"].replace(" ", "_") + "_" + HIV_activity + str(counter) + ".png"
+
+        if HIV_activity == "regression":
+            filename = path + compound["MolName"].replace(" ", "_") + "y" + str(compound["Lipophilicity"]) + "_" + ".png"
+
+        else:
+            filename = path + compound["MolName"].replace(" ", "_") + "_" + HIV_activity + str(counter) + ".png"
         counter += 1
     
         bg = Image.fromarray((colorSMILES(smi) * 255).astype("uint8"))    
