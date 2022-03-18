@@ -50,8 +50,8 @@ params = {
 }
 
 # _____________________load or create HivData with if statement _____________________
-DirTrainImg = "Images/SmilesImages/Train/"
-DirTestImg = "Images/SmilesImages/Test/"
+DirTrainImg = "HIVImages/SmilesImages/Train/"
+DirTestImg = "HIVImages/SmilesImages/Test/"
 DirTensorArray = "Data/SmilesArray/"
 
 # Loading trainig HivData

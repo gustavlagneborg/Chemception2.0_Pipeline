@@ -282,4 +282,4 @@ def generateImageSMILEColor(path, compoundList, HIV_activity, withChars=True):
     print(f"Done producing smilesColorImages {HIV_activity} compounds for path: {path}. {counter} images was created")
 
 
-# --------ChemOriginal Images--------
+# --------ChemOriginal HIVImages--------
