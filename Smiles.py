@@ -27,8 +27,8 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/Smiles/"
-modelName = "T1_Smilesmodel"
-batch_size = 80
+modelName = "T1_F64_Smilesmodel"
+batch_size = 32
 nb_epoch = 100
 verbose = 1
 
@@ -36,12 +36,12 @@ verbose = 1
 rotation_range = 0
 
 params = {
-    'conv1_units': 32,
-    'conv2_units': 32,
-    'conv3_units': 32,
-    'conv4_units': 32,
-    'conv5_units': 32,
-    'conv6_units': 32,
+    'conv1_units': 64,
+    'conv2_units': 64,
+    'conv3_units': 64,
+    'conv4_units': 64,
+    'conv5_units': 64,
+    'conv6_units': 64,
     'num_block1': 1,
     'num_block2': 1,
     'num_block3': 1,
@@ -93,7 +93,7 @@ X_train, X_valid, y_train, y_valid = train_test_split(
                                         stratify=y_train_and_valid)
 
 # print HivData shapes before oversampling
-print("Data shapes before oversampling: ")
+print("HivData shapes before oversampling: ")
 print("X_train HivData shape: " + str(X_train.shape))
 print("y_train HivData shape: " + str(y_train.shape) + "\n")
 
@@ -122,7 +122,7 @@ plt.imshow(v[:,:,:3])
 plt.show()
 
 # print HivData shapes after oversampling
-print("Data shapes after oversampling: ")
+print("HivData shapes after oversampling: ")
 print("X_train HivData shape: " + str(X_train.shape))
 print("y_train HivData shape: " + str(y_train.shape) + "\n")
 
@@ -145,8 +145,6 @@ if gpus:
     except RuntimeError as e:
         print(e)
 
-config = tf.compat.v1.ConfigProto(gpu_options=tf.compat.v1.GPUOptions(allow_growth=True))
-sess = tf.compat.v1.Session(config=config)
 
 #  _____________________Model setup and 5-fold CV_____________________
 # inspiration: https://github.com/jeffheaton/t81_558_deep_learning/blob/master/t81_558_class_05_2_kfold.ipynb
@@ -167,11 +165,11 @@ else:
 
 
     # Building the model
-    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2, lr=0.00005)
+    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2, lr=0.00001)
 
     print(model.summary())
 
-    # Setup callbacks
+    # Setup callbacks0
     filecp = path + "_bestweights_trial_" + ".hdf5"
     filecsv = path + "_loss_curve_"  + ".csv"
     callbacks = [TerminateOnNaN(),

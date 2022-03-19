@@ -29,7 +29,7 @@ tf.random.set_seed(
 
 path = "SavedModels/MolSmiles/"
 modelName = "T3_F32_MolSmiles"
-batch_size = 48
+batch_size = 80
 nb_epoch = 100
 verbose = 1
 
@@ -46,7 +46,7 @@ params = {
     'num_block1': 3,
     'num_block2': 3,
     'num_block3': 3,
-    'dropval': 0.6,
+    'dropval': 0.5,
 }
 
 # _____________________load or create HivData with if statement _____________________
@@ -93,7 +93,7 @@ X_train, X_valid, y_train, y_valid = train_test_split(
                                         stratify=y_train_and_valid)
 
 # print HivData shapes before oversampling
-print("Data shapes before oversampling: ")
+print("HivData shapes before oversampling: ")
 print("X_train HivData shape: " + str(X_train.shape))
 print("y_train HivData shape: " + str(y_train.shape) + "\n")
 
@@ -122,7 +122,7 @@ plt.imshow(v[:,:,:3])
 plt.show()
 
 # print HivData shapes after oversampling
-print("Data shapes after oversampling: ")
+print("HivData shapes after oversampling: ")
 print("X_train HivData shape: " + str(X_train.shape))
 print("y_train HivData shape: " + str(y_train.shape) + "\n")
 
@@ -146,8 +146,7 @@ if gpus:
     except RuntimeError as e:
         print(e)
 
-config = tf.compat.v1.ConfigProto(gpu_options=tf.compat.v1.GPUOptions(allow_growth=True))
-sess = tf.compat.v1.Session(config=config)
+
 
 #  _____________________Model setup and 5-fold CV_____________________
 # inspiration: https://github.com/jeffheaton/t81_558_deep_learning/blob/master/t81_558_class_05_2_kfold.ipynb

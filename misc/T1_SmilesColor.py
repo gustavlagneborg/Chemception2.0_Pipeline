@@ -54,13 +54,13 @@ params = {
 # _____________________load or create HivData with if statement _____________________
 DirTrainImg = "HIVImages/SmilesColorImages/Train/"
 DirTestImg = "HIVImages/SmilesColorImages/Test/"
-DirTrainArray = "Data/SmilesColorArray/"
-DirTestArray = "Data/SmilesColorArray/"
+DirTrainArray = "HivData/SmilesColorArray/"
+DirTestArray = "HivData/SmilesColorArray/"
 
 # Loading trainig HivData
-if (os.path.exists("Data/SmilesColorArray/trainData.pickle")):
+if (os.path.exists("HivData/SmilesColorArray/trainData.pickle")):
     print("Local train HivData was found" + "\n")
-    pickle_in = open("Data/SmilesColorArray/trainData.pickle","rb")
+    pickle_in = open("HivData/SmilesColorArray/trainData.pickle","rb")
     trainAndValidData = pickle.load(pickle_in)
 
 else:
@@ -69,9 +69,9 @@ else:
     print("Done!")
 
     # Loading individual test HivData
-if (os.path.exists("Data/SmilesColorArray/testData.pickle")):
+if (os.path.exists("HivData/SmilesColorArray/testData.pickle")):
     print("Local test HivData was found" + "\n")
-    pickle_in = open("Data/SmilesColorArray/testData.pickle","rb")
+    pickle_in = open("HivData/SmilesColorArray/testData.pickle","rb")
     testData = pickle.load(pickle_in)
 else:
     print("Producing test HivData!" + "\n")

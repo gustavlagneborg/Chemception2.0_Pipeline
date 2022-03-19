@@ -55,7 +55,7 @@ params = {
 # _____________________load or create HivData with if statement _____________________
 DirTrainImg = "HIVImages/MolFromSmilesImages/Train/"
 DirTestImg = "HIVImages/MolFromSmilesImages/Test/"
-DirTensorArray = "Data/MolFromSmilesArray/"
+DirTensorArray = "HivData/MolFromSmilesArray/"
 
 # Loading trainig HivData
 if os.path.exists("../LipophilicityData/MolFromSmilesArray/X_Train.pickle"):
