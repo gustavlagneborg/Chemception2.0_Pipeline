@@ -29,7 +29,7 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/SmilesColor/"
-modelName = "T2_SmilesColorModel"
+modelName = "T1_F64_SmilesColorModel"
 batch_size = 32
 nb_epoch = 100
 verbose = 1
