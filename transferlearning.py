@@ -6,6 +6,28 @@ from sklearn.model_selection import train_test_split
 from MachineLearning.CNNDesignAndSetup import *
 from MachineLearning.evaluation import *
 from Preprocessing.DataPrep import *
+import statistics
+
+import pandas as pd
+from numpy import std
+from MachineLearning.CNNDesignAndSetup import *
+from MachineLearning.evaluation import *
+from Preprocessing.DataPrep import *
+
+import keras
+import tensorflow as tf
+from tensorflow.keras.optimizers import Adam, RMSprop, SGD
+from sklearn.model_selection import StratifiedKFold, train_test_split, StratifiedShuffleSplit
+from sklearn.metrics import roc_auc_score, accuracy_score
+from keras.models import Sequential, Model
+from keras.layers import Conv2D, MaxPooling2D, Input, GlobalMaxPooling2D
+from keras.layers.core import Dense, Dropout, Activation, Flatten
+from keras.callbacks import TerminateOnNaN, EarlyStopping, ReduceLROnPlateau, CSVLogger, ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, EarlyStopping, Callback, LearningRateScheduler, LambdaCallback
+from keras.preprocessing.image import ImageDataGenerator
+from keras.callbacks import ReduceLROnPlateau
+from keras import backend as K
+import sys
 
 random_state = 125
 print(tf.__version__)
@@ -26,15 +48,15 @@ verbose = 1
 rotation_range = 0
 
 params = {
-    'conv1_units': 16,
-    'conv2_units': 16,
-    'conv3_units': 16,
-    'conv4_units': 16,
-    'conv5_units': 16,
-    'conv6_units': 16,
-    'num_block1': 3,
-    'num_block2': 3,
-    'num_block3': 3,
+    'conv1_units': 64,
+    'conv2_units': 64,
+    'conv3_units': 64,
+    'conv4_units': 64,
+    'conv5_units': 64,
+    'conv6_units': 64,
+    'num_block1': 1,
+    'num_block2': 1,
+    'num_block3': 1,
     'dropval': 0.5,
 }
 
@@ -188,14 +210,25 @@ except:
 # create model with preloaded weights
 results = pd.DataFrame(columns=['Train Loss', 'Validation Loss', 'Test Loss', 'Train RMSE', 'Validation RMSE', 'Test RMSE'])
 
-filecp = "path for pre trained weights"
-model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1)
-print(model.summary())
-model.load_weights(filecp)
+# load pretrained model
+filecp = path + "_bestweights_trial_" + ".hdf5"
+model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1, lr=0.00001)
+submodel.load_weights(filecp, by_name=True)
 
-# train..
+for layer in submodel.layers:
+    layer.trainable = False
 
-cs_compute_results(model, classes=2, df_out=results,
+tf_model = Sequential()
+tf_model.add(submodel)
+tf_model.add(Dense(units=1, activation='linear'))
+print(tf_model.summary())
+
+
+
+# train trainable layers
+
+# compute performance
+cs_compute_results(model, classes=1, df_out=results,
                            train_data=(X_train, y_train),
                            valid_data=(X_valid, y_valid),
                            test_data=(X_test, y_test),
