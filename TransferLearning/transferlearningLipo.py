@@ -39,7 +39,7 @@ tf.random.set_seed(
 
 loadPath = "../SavedModels/SmilesColor/"
 path = "SmilesColorLipo/"
-modelName = "Transfer learning"
+modelName = "TransferLearningLipo"
 batch_size = 32
 nb_epoch = 200
 verbose = 1
