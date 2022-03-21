@@ -36,7 +36,7 @@ params = {
 }
 
 # Load data to be explained
-df_test = 
+df_test =
 
 input_shape = X_test.shape[1:]
 
