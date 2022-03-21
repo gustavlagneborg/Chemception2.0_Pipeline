@@ -151,8 +151,7 @@ if gpus:
     print(e)
 
 
-#  _____________________Model setup and 5-fold CV_____________________
-# inspiration: https://github.com/jeffheaton/t81_558_deep_learning/blob/master/t81_558_class_05_2_kfold.ipynb
+#  _____________________Model setup_____________________
 if (os.path.exists(path + 'results.csv')):
     print(f"_________Files at {path} was found. If you want to train a new model, delete files in that path_________")
     print()

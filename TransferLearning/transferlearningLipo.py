@@ -33,13 +33,12 @@ random_state = 125
 print(tf.__version__)
 
 # configuration
-random_state = 125
 tf.random.set_seed(
     random_state
 )
 
-loadPath = "SavedModels/SmilesColor/"
-path = "../SavedModels/SmilesColorLipo/"
+loadPath = "../SavedModels/SmilesColor/"
+path = "SmilesColorLipo/"
 modelName = "Transfer learning"
 batch_size = 32
 nb_epoch = 200
