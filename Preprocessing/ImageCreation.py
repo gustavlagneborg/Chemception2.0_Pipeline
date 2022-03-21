@@ -286,4 +286,26 @@ def generateImageSMILEColor(path, compoundList, HIV_activity, withChars=True):
     print(f"Done producing smilesColorImages {HIV_activity} compounds for path: {path}. {counter} images was created")
 
 
-# --------ChemOriginal HIVImages--------
+# --------images for predicting test data--------
+def generateImageSMILETestData(smi):
+    char_width = 6
+    height = 17
+    num_chars = 100
+    width = char_width * num_chars
+
+    img = Image.new("RGB", (width, height), (255, 255, 255))
+
+    draw = ImageDraw.Draw(img)
+    w, h = draw.textsize(smi)
+
+    draw.text((0, h / 2), smi, fill="black")
+
+    return img
+
+
+def generateImageSMILEColorTestData(smi, withChars=True):
+    bg = Image.fromarray((colorSMILES(smi) * 255).astype("uint8"))
+    if withChars:
+        return SMILESToImage(smi, bg)
+    else:
+        return bg
