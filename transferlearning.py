@@ -38,7 +38,8 @@ tf.random.set_seed(
     random_state
 )
 
-path = "SavedModels/SmilesColor/"
+loadPath = "SavedModels/SmilesColor/"
+path = "SavedModels/SmilesColorLipo/"
 modelName = "Transfer learning"
 batch_size = 32
 nb_epoch = 100
@@ -177,6 +178,14 @@ X_train, X_valid, y_train, y_valid = train_test_split(
                                         random_state=random_state,
                                         shuffle=True)
 
+# print LipoData shapes before oversampling
+print("LipoData shapes: ")
+print("X_train HivData shape: " + str(X_train.shape))
+print("y_train HivData shape: " + str(y_train.shape) + "\n")
+
+print("X_validation HivData shape: " + str(X_valid.shape))
+print("y_validation HivData shape: " + str(y_valid.shape) + "\n")
+
 y_train = y_train.reshape(-1, 1)
 y_valid = y_valid.reshape(-1, 1)
 y_test = y_test.reshape(-1, 1)
@@ -211,7 +220,7 @@ except:
 results = pd.DataFrame(columns=['Train Loss', 'Validation Loss', 'Test Loss', 'Train RMSE', 'Validation RMSE', 'Test RMSE'])
 
 # load pretrained model
-filecp = path + "_bestweights_trial_" + ".hdf5"
+filecp = loadPath + "_bestweights_trial_" + ".hdf5"
 model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1, lr=0.00001)
 submodel.load_weights(filecp, by_name=True)
 
@@ -221,18 +230,49 @@ for layer in submodel.layers:
 tf_model = Sequential()
 tf_model.add(submodel)
 tf_model.add(Dense(units=1, activation='linear'))
+
+optimizer = RMSprop(lr=0.0001)
+tf_model.compile(optimizer=optimizer, loss="mean_squared_error")
+
 print(tf_model.summary())
 
+# Setup callbacks
+filecp = path + "_bestweights_trial_" + ".hdf5"
+filecsv = path + "_loss_curve_"  + ".csv"
+callbacks = [TerminateOnNaN(),
+             LambdaCallback(on_epoch_end=lambda epoch, logs: sys.stdout.flush()),
+             EarlyStopping(monitor='val_loss', patience=25, verbose=1, mode='auto'),
+             ModelCheckpoint(filecp, monitor="val_loss", verbose=1, save_best_only=True, mode="auto"),
+             CSVLogger(filecsv)]
 
+# Train model
+with tf.device('/cpu:0'):
+    datagen = ImageDataGenerator()
+    hist = tf_model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
+                                  epochs=nb_epoch, steps_per_epoch=X_train.shape[0] / batch_size,
+                                  verbose=verbose,
+                                  validation_data=(X_valid, y_valid),
+                                  callbacks=callbacks)
 
-# train trainable layers
+    # Visualize loss curve
+    hist_df = cs_keras_to_seaborn(hist)
+    cs_make_plots(hist_df, filename=path)
 
-# compute performance
-cs_compute_results(model, classes=1, df_out=results,
-                           train_data=(X_train, y_train),
-                           valid_data=(X_valid, y_valid),
-                           test_data=(X_test, y_test),
-                           filename=path)
+    # Save model and history
+    hist = hist.history
+    tf_model.save(path + modelName)
+    pickle_out = open(path + modelName + "_History" + ".pickle", "wb")
+    pickle.dump(hist, pickle_out)
+    pickle_out.close()
+
+with tf.device('/cpu:0'):
+    # Reload best model & compute results
+    tf_model.load_weights(filecp)
+    cs_compute_results(tf_model, classes=1, df_out=results,
+                       train_data=(X_train, y_train),
+                       valid_data=(X_valid, y_valid),
+                       test_data=(X_test, y_test),
+                       filename=path)
 
 # Calculate results for entire CV
 final_mean = results.mean(axis=0)

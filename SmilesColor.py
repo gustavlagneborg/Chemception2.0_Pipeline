@@ -29,7 +29,7 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/SmilesColor/"
-modelName = "T1_F64_SmilesColorModel"
+modelName = "T3_F64_SmilesColorModel"
 batch_size = 32
 nb_epoch = 100
 verbose = 1
@@ -38,15 +38,15 @@ verbose = 1
 rotation_range = 0
 
 params = {
-    'conv1_units': 64,
-    'conv2_units': 64,
-    'conv3_units': 64,
-    'conv4_units': 64,
-    'conv5_units': 64,
-    'conv6_units': 64,
-    'num_block1': 1,
-    'num_block2': 1,
-    'num_block3': 1,
+    'conv1_units': 16,
+    'conv2_units': 16,
+    'conv3_units': 16,
+    'conv4_units': 16,
+    'conv5_units': 16,
+    'conv6_units': 16,
+    'num_block1': 3,
+    'num_block2': 3,
+    'num_block3': 3,
     'dropval': 0.5,
 }
 
