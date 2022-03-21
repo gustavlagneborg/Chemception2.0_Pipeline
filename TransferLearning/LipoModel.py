@@ -38,9 +38,9 @@ tf.random.set_seed(
 )
 
 path = "SmilesColorLipo/"
-modelName = "T3_F16_Lipo"
+modelName = "T3_F16_Lipo_model"
 batch_size = 32
-nb_epoch = 200
+nb_epoch = 100
 verbose = 1
 
 # change depending on image, 180 for mol images, 0 for others
@@ -231,7 +231,7 @@ else:
 
 
     # Building the model
-    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1, lr=0.00001)
+    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1, lr=0.0001)
 
     print(model.summary())
 
