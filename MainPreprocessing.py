@@ -121,19 +121,21 @@ else:
     generateImageSMILEColor(path="HIVImages/SmilesColorImages/Test/", compoundList=df_inactives_test, HIV_activity="inactive", withChars=False)
     generateImageSMILEColor(path="HIVImages/SmilesColorImages/Test/", compoundList=df_actives_test, HIV_activity="active", withChars=False)
 
-"""# --------ChemOriginal HIVImages--------
-for fname in os.listdir('HIVImages/ChemOriginalImages/Train'):
+
+# --------SmilesColorCharsImages--------
+# uses smiles to produce images
+for fname in os.listdir('HIVImages/SmilesColorCharsImages/Train'):
     if fname.endswith('.png'):
-        # do stuff on the file
-        print("png files already exists in specified path - ChemOriginal HIVImages")
+        print("png files already exists in specified path - Smiles Color char HIVImages")
         break
 else:
     # train images
-    chemcepterize_mol(path="HIVImages/ChemOriginalImages/Train/", compoundList=df_inactives_train, HIV_activity="inactive")
-    chemcepterize_mol(path="HIVImages/ChemOriginalImages/Train/", compoundList=df_actives_train, HIV_activity="active")
+    generateImageSMILEColor(path="HIVImages/SmilesColorCharsImages/Train/", compoundList=df_inactives_train, HIV_activity="inactive", withChars=True)
+    generateImageSMILEColor(path="HIVImages/SmilesColorImages/Train/", compoundList=df_actives_train, HIV_activity="active", withChars=True)
 
     # test images
-    chemcepterize_mol(path="HIVImages/ChemOriginalImages/Test/", compoundList=df_inactives_test, HIV_activity="inactive")
-    chemcepterize_mol(path="HIVImages/ChemOriginalImages/Test/", compoundList=df_actives_test, HIV_activity="active")"""
+    generateImageSMILEColor(path="HIVImages/SmilesColorCharsImages/Test/", compoundList=df_inactives_test, HIV_activity="inactive", withChars=True)
+    generateImageSMILEColor(path="HIVImages/SmilesColorCharsImages/Test/", compoundList=df_actives_test, HIV_activity="active", withChars=True)
+
 
 print("Done!")
