@@ -37,7 +37,7 @@ tf.random.set_seed(
     random_state
 )
 
-loadPath = "../SavedModels/SmilesColor/"
+loadPath = "../SavedModels/BestModel/"
 path = "SmilesColorLipo/"
 modelName = "TransferLearningLipo"
 batch_size = 32
