@@ -131,7 +131,7 @@ for fname in os.listdir('HIVImages/SmilesColorCharsImages/Train'):
 else:
     # train images
     generateImageSMILEColor(path="HIVImages/SmilesColorCharsImages/Train/", compoundList=df_inactives_train, HIV_activity="inactive", withChars=True)
-    generateImageSMILEColor(path="HIVImages/SmilesColorImages/Train/", compoundList=df_actives_train, HIV_activity="active", withChars=True)
+    generateImageSMILEColor(path="HIVImages/SmilesColorCharsImages/Train/", compoundList=df_actives_train, HIV_activity="active", withChars=True)
 
     # test images
     generateImageSMILEColor(path="HIVImages/SmilesColorCharsImages/Test/", compoundList=df_inactives_test, HIV_activity="inactive", withChars=True)
