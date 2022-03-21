@@ -231,7 +231,7 @@ else:
 
 
     # Building the model
-    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1, lr=0.0001)
+    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1, lr=0.001)
 
     print(model.summary())
 
