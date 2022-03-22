@@ -83,12 +83,14 @@ df_correct = df_test[df_test["HIV_active"] == df_test["rounded prediction"]]
 df_correct_active = df_correct[df_correct["HIV_active"] == 1].sort_values(by=["probability"], ascending=False)
 df_correct_inactive = df_correct[df_correct["HIV_active"] == 0].sort_values(by=["probability"], ascending=False)
 
-# initilize lime
+# lime config
 explainer = lime_image.LimeImageExplainer(random_state=random_state)
+
+# Grad-Cam config
 
 # produce explanations for active compounds
 for index, row in df_correct_active[:3].iterrows():
-    fig, axs = plt.subplots(4)
+    fig, axs = plt.subplots(5)
     fig.suptitle("Explanation for HIV active compound: " + row["MolName"])
 
     # plot original image
@@ -115,15 +117,23 @@ for index, row in df_correct_active[:3].iterrows():
     axs[2].imshow(image_explanations)
     axs[2].set_xlabel("Lime explanation")
 
+    # heatmap
+    ind = explanation.top_labels[0]
+    dict_heatmap = dict(explanation.local_exp[ind])
+    heatmap = np.vectorize(dict_heatmap.get)(explanation.segments)
+    mappable = axs[3].imshow(heatmap, cmap='RdBu', vmin=-heatmap.max(), vmax=heatmap.max())
+    plt.colorbar(mappable, ax=axs[3])
+    axs[3].set_xlabel("Importance heatmap", fontsize=10)
+
     # plot gradcam explanation
-    axs[3].set_xlabel("Grad-Cam explanation")
+    axs[4].set_xlabel("Grad-Cam explanation")
 
     #fig.savefig("active_explanation_{}".format(row["MolName"]), dpi=600)
     break
 
 # produce explanations for active compounds
 for index, row in df_correct_inactive[:3].iterrows():
-    fig, axs = plt.subplots(4)
+    fig, axs = plt.subplots(5)
     fig.suptitle("Explanation for HIV inactive compound: " + row["MolName"])
 
     # plot original image
@@ -150,8 +160,16 @@ for index, row in df_correct_inactive[:3].iterrows():
     axs[2].imshow(image_explanations)
     axs[2].set_xlabel("Lime explanation")
 
+    # heatmap
+    ind = explanation.top_labels[0]
+    dict_heatmap = dict(explanation.local_exp[ind])
+    heatmap = np.vectorize(dict_heatmap.get)(explanation.segments)
+    mappable = axs[3].imshow(heatmap, cmap='RdBu', vmin=-heatmap.max(), vmax=heatmap.max())
+    plt.colorbar(mappable, ax=axs[3])
+    axs[3].set_xlabel("Importance heatmap", fontsize=10)
+
     # plot gradcam explanation
-    axs[3].set_xlabel("Grad-Cam explanation")
+    axs[4].set_xlabel("Grad-Cam explanation")
 
     #fig.savefig("inactive_explanation_{}".format(row["MolName"]), dpi=600)
     break
