@@ -8,7 +8,6 @@ from lime import lime_image
 import time
 from skimage.segmentation import mark_boundaries
 
-
 print(tf.__version__)
 
 # configuration
@@ -82,28 +81,71 @@ df_correct = df_test[df_test["HIV_active"] == df_test["rounded prediction"]]
 df_correct_active = df_correct[df_correct["HIV_active"] == 1].sort_values(by=["probability"], ascending=False)
 df_correct_inactive = df_correct[df_correct["HIV_active"] == 0].sort_values(by=["probability"], ascending=False)
 
-# Collect top 3 inactive and active molecules that are correctly predicted
-top_active_image = df_correct_active.iloc[0]
-top_inactive_image = df_correct_inactive.iloc[0]
+# initilize lime
+explainer = lime_image.LimeImageExplainer(random_state=random_state)
 
-# produce explanations
-explainer = lime_image.LimeImageExplainer()
+# produce explanations for active compounds
+for index, row in df_correct_active[:3].iterrows():
+    fig, axs = plt.subplots(3)
+    fig.suptitle("Explanation for HIV active compound: " + row["MolName"])
 
-def _predict_fn(images):
-    return model.predict(images)
+    # plot original image
+    axs[0].imshow(row["tensor"])
+    axs[0].set_xlabel("Original image")
 
-tmp = time.time()
-explanation = explainer.explain_instance(top_active_image["tensor"], _predict_fn, top_labels=1, hide_color=0, num_samples=1000)
-print(time.time() - tmp)
+    explanation = explainer.explain_instance(row["tensor"],
+                                             model.predict,
+                                             top_labels=1,
+                                             hide_color=0,
+                                             num_samples=1000)
 
-temp, mask = explanation.get_image_and_mask(top_active_image["HIV_active"], positive_only=True, num_features=5, hide_rest=True)
-#image_explanations = mark_boundaries(temp / 2 + 0.5, mask)
+    temp, mask = explanation.get_image_and_mask(explanation.top_labels[0],
+                                                positive_only=True,
+                                                num_features=5,
+                                                hide_rest=True)
 
-v=top_active_image["tensor"]
-plt.imshow(v[:, :, :3])
-plt.show()
+    # plot lime exlanation
+    image_explanations = mark_boundaries(temp.astype(np.uint8), mask)
 
-image_explanations = mark_boundaries(temp, mask)
-plt.imshow(image_explanations)
-#plt.imshow((image_explanations*2)/255)
+    axs[1].imshow(image_explanations)
+    axs[1].set_xlabel("Lime explanation")
+
+    # plot gradcam explanation
+    axs[2].set_xlabel("Grad-Cam explanation")
+
+    #fig.savefig("active_explanation_{}".format(row["MolName"]), dpi=600)
+    break
+
+# produce explanations for active compounds
+for index, row in df_correct_inactive[:3].iterrows():
+    fig, axs = plt.subplots(3)
+    fig.suptitle("Explanation for HIV inactive compound: " + row["MolName"])
+
+    # plot original image
+    axs[0].imshow(row["tensor"])
+    axs[0].set_xlabel("Original image")
+
+    explanation = explainer.explain_instance(row["tensor"],
+                                             model.predict,
+                                             top_labels=1,
+                                             hide_color=0,
+                                             num_samples=1000)
+
+    temp, mask = explanation.get_image_and_mask(explanation.top_labels[0],
+                                                positive_only=True,
+                                                num_features=5,
+                                                hide_rest=True)
+
+    # plot lime explanation
+    image_explanations = mark_boundaries(temp.astype(np.uint8), mask)
+
+    axs[1].imshow(image_explanations)
+    axs[1].set_xlabel("Lime explanation")
+
+    # plot gradcam explanation
+    axs[2].set_xlabel("Grad-Cam explanation")
+
+    #fig.savefig("inactive_explanation_{}".format(row["MolName"]), dpi=600)
+    break
+
 plt.show()
