@@ -47,7 +47,9 @@ df_test = pd.read_csv(DirTestDf + "df_test_preprocessed.csv").drop(['Unnamed: 0'
 
 # preprocessing test data
 df_test["images"] = df_test["SMILES"].apply(generateImageSMILEColorTestData, args=[False])
+df_test["imagesSmiles"] = df_test["SMILES"].apply(generateImageSMILEColorTestData, args=[True])
 df_test["tensor"] = df_test["images"].apply(np.array)
+df_test["tensorSmiles"] = df_test["imagesSmiles"].apply(np.array)
 
 X_test = df_test["tensor"].values
 X_test = np.asarray(X_test.tolist())
@@ -86,12 +88,15 @@ explainer = lime_image.LimeImageExplainer(random_state=random_state)
 
 # produce explanations for active compounds
 for index, row in df_correct_active[:3].iterrows():
-    fig, axs = plt.subplots(3)
+    fig, axs = plt.subplots(4)
     fig.suptitle("Explanation for HIV active compound: " + row["MolName"])
 
     # plot original image
     axs[0].imshow(row["tensor"])
     axs[0].set_xlabel("Original image")
+
+    axs[1].imshow(row["tensorSmiles"])
+    axs[1].set_xlabel("Original image with smiles")
 
     explanation = explainer.explain_instance(row["tensor"],
                                              model.predict,
@@ -107,23 +112,26 @@ for index, row in df_correct_active[:3].iterrows():
     # plot lime exlanation
     image_explanations = mark_boundaries(temp.astype(np.uint8), mask)
 
-    axs[1].imshow(image_explanations)
-    axs[1].set_xlabel("Lime explanation")
+    axs[2].imshow(image_explanations)
+    axs[2].set_xlabel("Lime explanation")
 
     # plot gradcam explanation
-    axs[2].set_xlabel("Grad-Cam explanation")
+    axs[3].set_xlabel("Grad-Cam explanation")
 
     #fig.savefig("active_explanation_{}".format(row["MolName"]), dpi=600)
     break
 
 # produce explanations for active compounds
 for index, row in df_correct_inactive[:3].iterrows():
-    fig, axs = plt.subplots(3)
+    fig, axs = plt.subplots(4)
     fig.suptitle("Explanation for HIV inactive compound: " + row["MolName"])
 
     # plot original image
     axs[0].imshow(row["tensor"])
     axs[0].set_xlabel("Original image")
+
+    axs[1].imshow(row["tensorSmiles"])
+    axs[1].set_xlabel("Original image with smiles")
 
     explanation = explainer.explain_instance(row["tensor"],
                                              model.predict,
@@ -139,11 +147,11 @@ for index, row in df_correct_inactive[:3].iterrows():
     # plot lime explanation
     image_explanations = mark_boundaries(temp.astype(np.uint8), mask)
 
-    axs[1].imshow(image_explanations)
-    axs[1].set_xlabel("Lime explanation")
+    axs[2].imshow(image_explanations)
+    axs[2].set_xlabel("Lime explanation")
 
     # plot gradcam explanation
-    axs[2].set_xlabel("Grad-Cam explanation")
+    axs[3].set_xlabel("Grad-Cam explanation")
 
     #fig.savefig("inactive_explanation_{}".format(row["MolName"]), dpi=600)
     break
