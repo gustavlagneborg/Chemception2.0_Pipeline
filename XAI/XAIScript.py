@@ -1,3 +1,7 @@
+import sys, os
+
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
+
 import numpy as np
 import tensorflow as tf
 from MachineLearning.evaluation import *
@@ -128,7 +132,7 @@ for index, row in df_correct_active[:3].iterrows():
     # plot gradcam explanation
     axs[4].set_xlabel("Grad-Cam explanation")
 
-    #fig.savefig("active_explanation_{}".format(row["MolName"]), dpi=600)
+    # fig.savefig("active_explanation_{}".format(row["MolName"]), dpi=600)
     break
 
 # produce explanations for active compounds
@@ -171,7 +175,7 @@ for index, row in df_correct_inactive[:3].iterrows():
     # plot gradcam explanation
     axs[4].set_xlabel("Grad-Cam explanation")
 
-    #fig.savefig("inactive_explanation_{}".format(row["MolName"]), dpi=600)
+    # fig.savefig("inactive_explanation_{}".format(row["MolName"]), dpi=600)
     break
 
 plt.show()
