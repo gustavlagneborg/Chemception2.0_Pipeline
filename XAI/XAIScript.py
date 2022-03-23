@@ -11,6 +11,7 @@ from PIL import Image
 from lime import lime_image
 import time
 from skimage.segmentation import mark_boundaries
+from GradCam import GradCAM
 
 print(tf.__version__)
 
@@ -91,10 +92,11 @@ df_correct_inactive = df_correct[df_correct["HIV_active"] == 0].sort_values(by=[
 explainer = lime_image.LimeImageExplainer(random_state=random_state)
 
 # Grad-Cam config
+last_conv_layer_name = "conv2d_62"
 
 # produce explanations for active compounds
 for index, row in df_correct_active[:3].iterrows():
-    fig, axs = plt.subplots(5)
+    fig, axs = plt.subplots(6)
     fig.suptitle("Explanation for HIV active compound: " + row["MolName"])
     fig.tight_layout()
 
@@ -122,23 +124,38 @@ for index, row in df_correct_active[:3].iterrows():
     axs[2].imshow(image_explanations)
     axs[2].set_title("Lime explanation")
 
-    # heatmap
+    # Lime heatmap
     ind = explanation.top_labels[0]
     dict_heatmap = dict(explanation.local_exp[ind])
     heatmap = np.vectorize(dict_heatmap.get)(explanation.segments)
     mappable = axs[3].imshow(heatmap, cmap='RdBu', vmin=-heatmap.max(), vmax=heatmap.max())
     plt.colorbar(mappable, ax=axs[3])
-    axs[3].set_title("Importance heatmap", fontsize=10)
+    axs[3].set_title("Importance heatmap")
 
     # plot gradcam explanation
-    axs[4].set_title("Grad-Cam explanation")
+    axs[4].set_title("Grad-Cam Heatmap")
+
+    image = cv2.resize(row["tensor"], (600, 38))
+    image = image.astype('float32')
+    image = np.expand_dims(image, axis=0)
+
+    icam = GradCAM(model, row["probability"], last_conv_layer_name)
+    heatmap = icam.compute_heatmap(image)
+    heatmap = cv2.resize(heatmap, (600, 38))
+    axs[4].imshow(heatmap)
+
+    image = cv2.resize(row["tensor"], (600, 38))
+    (heatmap, output) = icam.overlay_heatmap(heatmap, image, alpha=0.5)
+
+    axs[5].set_title("Grad-Cam Overlay output")
+    axs[5].imshow(output)
 
     # fig.savefig("active_explanation_{}".format(row["MolName"]), dpi=600)
     break
 
 # produce explanations for active compounds
 for index, row in df_correct_inactive[:3].iterrows():
-    fig, axs = plt.subplots(5)
+    fig, axs = plt.subplots(6)
     fig.suptitle("Explanation for HIV inactive compound: " + row["MolName"])
     fig.tight_layout()
 
@@ -172,10 +189,25 @@ for index, row in df_correct_inactive[:3].iterrows():
     heatmap = np.vectorize(dict_heatmap.get)(explanation.segments)
     mappable = axs[3].imshow(heatmap, cmap='RdBu', vmin=-heatmap.max(), vmax=heatmap.max())
     plt.colorbar(mappable, ax=axs[3])
-    axs[3].set_title("Importance heatmap", fontsize=10)
+    axs[3].set_title("Importance heatmap")
 
     # plot gradcam explanation
-    axs[4].set_title("Grad-Cam explanation")
+    axs[4].set_title("Grad-Cam Heatmap")
+
+    image = cv2.resize(row["tensor"], (600, 38))
+    image = image.astype('float32')
+    image = np.expand_dims(image, axis=0)
+
+    icam = GradCAM(model, row["probability"], last_conv_layer_name)
+    heatmap = icam.compute_heatmap(image)
+    heatmap = cv2.resize(heatmap, (600, 38))
+    axs[4].imshow(heatmap)
+
+    image = cv2.resize(row["tensor"], (600, 38))
+    (heatmap, output) = icam.overlay_heatmap(heatmap, image, alpha=0.5)
+
+    axs[5].set_title("Grad-Cam Overlay output")
+    axs[5].imshow(output)
 
     # fig.savefig("inactive_explanation_{}".format(row["MolName"]), dpi=600)
     break

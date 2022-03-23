@@ -1,48 +1,92 @@
-import numpy as np
+from tensorflow.keras.models import Model
 import tensorflow as tf
-from tensorflow import keras
-
-def get_img_array(img_path, size):
-    # `img` is a PIL image of size 299x299
-    img = keras.preprocessing.image.load_img(img_path, target_size=size)
-    # `array` is a float32 Numpy array of shape (299, 299, 3)
-    array = keras.preprocessing.image.img_to_array(img)
-    # We add a dimension to transform our array into a "batch"
-    # of size (1, 299, 299, 3)
-    array = np.expand_dims(array, axis=0)
-    return array
+import numpy as np
+import cv2
 
 
-def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None):
-    # First, we create a model that maps the input image to the activations
-    # of the last conv layer as well as the output predictions
-    grad_model = tf.keras.models.Model(
-        [model.inputs], [model.get_layer(last_conv_layer_name).output, model.output]
-    )
+class GradCAM:
+    def __init__(self, model, classIdx, layerName=None):
+        # store the model, the class index used to measure the class
+        # activation map, and the layer to be used when visualizing
+        # the class activation map
+        self.model = model
+        self.classIdx = classIdx
+        self.layerName = layerName
+        # if the layer name is None, attempt to automatically find
+        # the target output layer
+        if self.layerName is None:
+            self.layerName = self.find_target_layer()
 
-    # Then, we compute the gradient of the top predicted class for our input image
-    # with respect to the activations of the last conv layer
-    with tf.GradientTape() as tape:
-        last_conv_layer_output, preds = grad_model(img_array)
-        if pred_index is None:
-            pred_index = tf.argmax(preds[0])
-        class_channel = preds[:, pred_index]
+    def find_target_layer(self):
+        # attempt to find the final convolutional layer in the network
+        # by looping over the layers of the network in reverse order
+        for layer in reversed(self.model.layers):
+            # check to see if the layer has a 4D output
+            if len(layer.output_shape) == 4:
+                return layer.name
+        # otherwise, we could not find a 4D layer so the GradCAM
+        # algorithm cannot be applied
+        raise ValueError("Could not find 4D layer. Cannot apply GradCAM.")
 
-    # This is the gradient of the output neuron (top predicted or chosen)
-    # with regard to the output feature map of the last conv layer
-    grads = tape.gradient(class_channel, last_conv_layer_output)
+    def compute_heatmap(self, image, eps=1e-8):
+        # construct our gradient model by supplying (1) the inputs
+        # to our pre-trained model, (2) the output of the (presumably)
+        # final 4D layer in the network, and (3) the output of the
+        # softmax activations from the model
+        gradModel = Model(
+            inputs=[self.model.inputs],
+            outputs=[self.model.get_layer(self.layerName).output, self.model.output])
 
-    # This is a vector where each entry is the mean intensity of the gradient
-    # over a specific feature map channel
-    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+        # record operations for automatic differentiation
+        with tf.GradientTape() as tape:
+            # cast the image tensor to a float-32 data type, pass the
+            # image through the gradient model, and grab the loss
+            # associated with the specific class index
+            inputs = tf.cast(image, tf.float32)
+            (convOutputs, predictions) = gradModel(inputs)
 
-    # We multiply each channel in the feature map array
-    # by "how important this channel is" with regard to the top predicted class
-    # then sum all the channels to obtain the heatmap class activation
-    last_conv_layer_output = last_conv_layer_output[0]
-    heatmap = last_conv_layer_output @ pooled_grads[..., tf.newaxis]
-    heatmap = tf.squeeze(heatmap)
+            loss = predictions[:, tf.argmax(predictions[0])]
 
-    # For visualization purpose, we will also normalize the heatmap between 0 & 1
-    heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
-    return heatmap.numpy()
+        # use automatic differentiation to compute the gradients
+        grads = tape.gradient(loss, convOutputs)
+
+        # compute the guided gradients
+        castConvOutputs = tf.cast(convOutputs > 0, "float32")
+        castGrads = tf.cast(grads > 0, "float32")
+        guidedGrads = castConvOutputs * castGrads * grads
+        # the convolution and guided gradients have a batch dimension
+        # (which we don't need) so let's grab the volume itself and
+        # discard the batch
+        convOutputs = convOutputs[0]
+        guidedGrads = guidedGrads[0]
+
+        # compute the average of the gradient values, and using them
+        # as weights, compute the ponderation of the filters with
+        # respect to the weights
+        weights = tf.reduce_mean(guidedGrads, axis=(0, 1))
+        cam = tf.reduce_sum(tf.multiply(weights, convOutputs), axis=-1)
+
+        # grab the spatial dimensions of the input image and resize
+        # the output class activation map to match the input image
+        # dimensions
+        (w, h) = (image.shape[2], image.shape[1])
+        heatmap = cv2.resize(cam.numpy(), (w, h))
+        # normalize the heatmap such that all values lie in the range
+        # [0, 1], scale the resulting values to the range [0, 255],
+        # and then convert to an unsigned 8-bit integer
+        numer = heatmap - np.min(heatmap)
+        denom = (heatmap.max() - heatmap.min()) + eps
+        heatmap = numer / denom
+        heatmap = (heatmap * 255).astype("uint8")
+        # return the resulting heatmap to the calling function
+        return heatmap
+
+    def overlay_heatmap(self, heatmap, image, alpha=0.5,
+                        colormap=cv2.COLORMAP_VIRIDIS):
+        # apply the supplied color map to the heatmap and then
+        # overlay the heatmap on the input image
+        heatmap = cv2.applyColorMap(heatmap, colormap)
+        output = cv2.addWeighted(image, alpha, heatmap, 1 - alpha, 0)
+        # return a 2-tuple of the color mapped heatmap and the output,
+        # overlaid image
+        return (heatmap, output)
