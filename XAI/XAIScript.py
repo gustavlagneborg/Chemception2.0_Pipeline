@@ -103,9 +103,13 @@ for index, row in df_correct_active[:3].iterrows():
     # plot original image
     axs[0].imshow(row["tensor"])
     axs[0].set_title("Original image")
+    axs[0].axes.xaxis.set_visible(False)
+    axs[0].axes.yaxis.set_visible(False)
 
     axs[1].imshow(row["tensorSmiles"])
     axs[1].set_title("Original image with smiles")
+    axs[1].axes.xaxis.set_visible(False)
+    axs[1].axes.yaxis.set_visible(False)
 
     explanation = explainer.explain_instance(row["tensor"],
                                              model.predict,
@@ -122,19 +126,21 @@ for index, row in df_correct_active[:3].iterrows():
     image_explanations = mark_boundaries(temp.astype(np.uint8), mask)
 
     axs[2].imshow(image_explanations)
-    axs[2].set_title("Lime explanation")
+    axs[2].set_title("Lime Explanation")
+    axs[2].axes.xaxis.set_visible(False)
+    axs[2].axes.yaxis.set_visible(False)
 
     # Lime heatmap
     ind = explanation.top_labels[0]
     dict_heatmap = dict(explanation.local_exp[ind])
     heatmap = np.vectorize(dict_heatmap.get)(explanation.segments)
-    mappable = axs[3].imshow(heatmap, cmap='RdBu', vmin=-heatmap.max(), vmax=heatmap.max())
-    plt.colorbar(mappable, ax=axs[3])
-    axs[3].set_title("Importance heatmap")
+    mappable = axs[4].imshow(heatmap, cmap='viridis', vmin=-heatmap.max(), vmax=heatmap.max())
+    #plt.colorbar(mappable, ax=axs[3])
+    axs[4].set_title("Lime Heatmap")
+    axs[4].axes.xaxis.set_visible(False)
+    axs[4].axes.yaxis.set_visible(False)
 
     # plot gradcam explanation
-    axs[4].set_title("Grad-Cam Heatmap")
-
     image = cv2.resize(row["tensor"], (600, 38))
     image = image.astype('float32')
     image = np.expand_dims(image, axis=0)
@@ -142,15 +148,22 @@ for index, row in df_correct_active[:3].iterrows():
     icam = GradCAM(model, row["probability"], last_conv_layer_name)
     heatmap = icam.compute_heatmap(image)
     heatmap = cv2.resize(heatmap, (600, 38))
-    axs[4].imshow(heatmap)
+    axs[5].set_title("Grad-Cam Heatmap")
+    axs[5].imshow(heatmap)
+    axs[5].axes.yaxis.set_visible(False)
+    axs[5].axes.xaxis.set_visible(False)
 
     image = cv2.resize(row["tensor"], (600, 38))
     (heatmap, output) = icam.overlay_heatmap(heatmap, image, alpha=0.5)
 
-    axs[5].set_title("Grad-Cam Overlay output")
-    axs[5].imshow(output)
+    axs[3].set_title("Grad-Cam Explanation")
+    axs[3].imshow(output)
+    axs[3].axes.yaxis.set_visible(False)
+    axs[3].axes.xaxis.set_visible(False)
 
-    # fig.savefig("active_explanation_{}".format(row["MolName"]), dpi=600)
+    plt.subplots_adjust(wspace=0.1, hspace=0)
+
+    fig.savefig("active_explanation_{}".format(row["MolName"]), dpi=600)
     break
 
 # produce explanations for active compounds
@@ -162,9 +175,13 @@ for index, row in df_correct_inactive[:3].iterrows():
     # plot original image
     axs[0].imshow(row["tensor"])
     axs[0].set_title("Original image")
+    axs[0].axes.xaxis.set_visible(False)
+    axs[0].axes.yaxis.set_visible(False)
 
     axs[1].imshow(row["tensorSmiles"])
     axs[1].set_title("Original image with smiles")
+    axs[1].axes.xaxis.set_visible(False)
+    axs[1].axes.yaxis.set_visible(False)
 
     explanation = explainer.explain_instance(row["tensor"],
                                              model.predict,
@@ -181,19 +198,21 @@ for index, row in df_correct_inactive[:3].iterrows():
     image_explanations = mark_boundaries(temp.astype(np.uint8), mask)
 
     axs[2].imshow(image_explanations)
-    axs[2].set_title("Lime explanation")
+    axs[2].set_title("Lime Explanation")
+    axs[2].axes.xaxis.set_visible(False)
+    axs[2].axes.yaxis.set_visible(False)
 
     # heatmap
     ind = explanation.top_labels[0]
     dict_heatmap = dict(explanation.local_exp[ind])
     heatmap = np.vectorize(dict_heatmap.get)(explanation.segments)
-    mappable = axs[3].imshow(heatmap, cmap='RdBu', vmin=-heatmap.max(), vmax=heatmap.max())
-    plt.colorbar(mappable, ax=axs[3])
-    axs[3].set_title("Importance heatmap")
+    mappable = axs[4].imshow(heatmap, cmap='viridis', vmin=-heatmap.max(), vmax=heatmap.max())
+    #plt.colorbar(mappable, ax=axs[3])
+    axs[4].set_title("Lime Heatmap")
+    axs[4].axes.xaxis.set_visible(False)
+    axs[4].axes.yaxis.set_visible(False)
 
     # plot gradcam explanation
-    axs[4].set_title("Grad-Cam Heatmap")
-
     image = cv2.resize(row["tensor"], (600, 38))
     image = image.astype('float32')
     image = np.expand_dims(image, axis=0)
@@ -201,15 +220,22 @@ for index, row in df_correct_inactive[:3].iterrows():
     icam = GradCAM(model, row["probability"], last_conv_layer_name)
     heatmap = icam.compute_heatmap(image)
     heatmap = cv2.resize(heatmap, (600, 38))
-    axs[4].imshow(heatmap)
+    axs[5].set_title("Grad-Cam Heatmap")
+    axs[5].imshow(heatmap)
+    axs[5].axes.xaxis.set_visible(False)
+    axs[5].axes.yaxis.set_visible(False)
 
     image = cv2.resize(row["tensor"], (600, 38))
     (heatmap, output) = icam.overlay_heatmap(heatmap, image, alpha=0.5)
 
-    axs[5].set_title("Grad-Cam Overlay output")
-    axs[5].imshow(output)
+    axs[3].set_title("Grad-Cam Explanation")
+    axs[3].imshow(output)
+    axs[3].axes.xaxis.set_visible(False)
+    axs[3].axes.yaxis.set_visible(False)
 
-    # fig.savefig("inactive_explanation_{}".format(row["MolName"]), dpi=600)
+    plt.subplots_adjust(wspace=0.1, hspace=0)
+
+    fig.savefig("inactive_explanation_{}".format(row["MolName"]), dpi=600)
     break
 
 plt.show()
