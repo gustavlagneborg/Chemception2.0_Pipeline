@@ -28,8 +28,8 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/MolSmiles/"
-modelName = "T3_F32_MolSmiles"
-batch_size = 80
+modelName = "T2_F64_MolSmiles"
+batch_size = 16
 nb_epoch = 100
 verbose = 1
 
@@ -37,15 +37,15 @@ verbose = 1
 rotation_range = 180
 
 params = {
-    'conv1_units': 32,
-    'conv2_units': 32,
-    'conv3_units': 32,
-    'conv4_units': 32,
-    'conv5_units': 32,
-    'conv6_units': 32,
-    'num_block1': 3,
-    'num_block2': 3,
-    'num_block3': 3,
+    'conv1_units': 64,
+    'conv2_units': 64,
+    'conv3_units': 64,
+    'conv4_units': 64,
+    'conv5_units': 64,
+    'conv6_units': 64,
+    'num_block1': 2,
+    'num_block2': 2,
+    'num_block3': 2,
     'dropval': 0.5,
 }
 
@@ -167,7 +167,7 @@ else:
 
 
     # Building the model
-    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2)
+    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2, lr=0.000001)
 
     print(model.summary())
 
@@ -181,7 +181,7 @@ else:
                  CSVLogger(filecsv)]
 
     # Train model - rotation_range=rotation_range, fill_mode='constant', cval=0.
-    datagen = ImageDataGenerator()
+    datagen = ImageDataGenerator(rotation_range=rotation_range, fill_mode='constant', cval=0.)
     hist = model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),
                                   epochs=nb_epoch, steps_per_epoch=X_train.shape[0] / batch_size,
                                   verbose=verbose,

@@ -136,9 +136,9 @@ if imageType == "SmilesColor":
         generateImageSMILEColor(path="../LipophilicityImages/SmilesColorImages/Test/", compoundList=testing_data, HIV_activity="regression", withChars=False)
 
 # Transfer learning
-DirTrainImg = "LipophilicityImages/SmilesColorImages/Train/"
-DirTestImg = "LipophilicityImages/SmilesColorImages/Test/"
-DirTensorArray = "LipophilicityData/SmilesColorArray/"
+DirTrainImg = "../LipophilicityImages/SmilesColorImages/Train/"
+DirTestImg = "../LipophilicityImages/SmilesColorImages/Test/"
+DirTensorArray = "../LipophilicityData/SmilesColorArray/"
 
 # Loading trainig LipophilicityData
 if os.path.exists("../LipophilicityData/SmilesColorArray/X_Train.pickle"):
@@ -202,7 +202,7 @@ gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
     try:
         tf.config.experimental.set_virtual_device_configuration(gpus[0], [
-            tf.config.experimental.VirtualDeviceConfiguration(memory_limit=6082)])
+            tf.config.experimental.VirtualDeviceConfiguration(memory_limit=4096)])
     except RuntimeError as e:
         print(e)
 
@@ -213,6 +213,7 @@ try:
 except:
     # Invalid device or cannot modify virtual devices once initialized.
     pass
+
 
 if (os.path.exists(path + 'results.csv')):
     print(f"_________Files at {path} was found. If you want to train a new model, delete files in that path_________")

@@ -203,7 +203,7 @@ gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
     try:
         tf.config.experimental.set_virtual_device_configuration(gpus[0], [
-            tf.config.experimental.VirtualDeviceConfiguration(memory_limit=6082)])
+            tf.config.experimental.VirtualDeviceConfiguration(memory_limit=4096)])
     except RuntimeError as e:
         print(e)
 
@@ -223,7 +223,7 @@ filecp = loadPath + "_bestweights_trial_" + ".hdf5"
 model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=1, lr=0.001)
 submodel.load_weights(filecp, by_name=True)
 
-for layer in submodel.layers:
+for layer in submodel.layers[:int(len(submodel.layers) * 0.5)]:
     layer.trainable = False
 
 tf_model = Sequential()
