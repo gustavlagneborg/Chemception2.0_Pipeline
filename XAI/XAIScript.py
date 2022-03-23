@@ -96,13 +96,14 @@ explainer = lime_image.LimeImageExplainer(random_state=random_state)
 for index, row in df_correct_active[:3].iterrows():
     fig, axs = plt.subplots(5)
     fig.suptitle("Explanation for HIV active compound: " + row["MolName"])
+    fig.tight_layout()
 
     # plot original image
     axs[0].imshow(row["tensor"])
-    axs[0].set_xlabel("Original image")
+    axs[0].set_title("Original image")
 
     axs[1].imshow(row["tensorSmiles"])
-    axs[1].set_xlabel("Original image with smiles")
+    axs[1].set_title("Original image with smiles")
 
     explanation = explainer.explain_instance(row["tensor"],
                                              model.predict,
@@ -119,7 +120,7 @@ for index, row in df_correct_active[:3].iterrows():
     image_explanations = mark_boundaries(temp.astype(np.uint8), mask)
 
     axs[2].imshow(image_explanations)
-    axs[2].set_xlabel("Lime explanation")
+    axs[2].set_title("Lime explanation")
 
     # heatmap
     ind = explanation.top_labels[0]
@@ -127,10 +128,10 @@ for index, row in df_correct_active[:3].iterrows():
     heatmap = np.vectorize(dict_heatmap.get)(explanation.segments)
     mappable = axs[3].imshow(heatmap, cmap='RdBu', vmin=-heatmap.max(), vmax=heatmap.max())
     plt.colorbar(mappable, ax=axs[3])
-    axs[3].set_xlabel("Importance heatmap", fontsize=10)
+    axs[3].set_title("Importance heatmap", fontsize=10)
 
     # plot gradcam explanation
-    axs[4].set_xlabel("Grad-Cam explanation")
+    axs[4].set_title("Grad-Cam explanation")
 
     # fig.savefig("active_explanation_{}".format(row["MolName"]), dpi=600)
     break
@@ -139,13 +140,14 @@ for index, row in df_correct_active[:3].iterrows():
 for index, row in df_correct_inactive[:3].iterrows():
     fig, axs = plt.subplots(5)
     fig.suptitle("Explanation for HIV inactive compound: " + row["MolName"])
+    fig.tight_layout()
 
     # plot original image
     axs[0].imshow(row["tensor"])
-    axs[0].set_xlabel("Original image")
+    axs[0].set_title("Original image")
 
     axs[1].imshow(row["tensorSmiles"])
-    axs[1].set_xlabel("Original image with smiles")
+    axs[1].set_title("Original image with smiles")
 
     explanation = explainer.explain_instance(row["tensor"],
                                              model.predict,
@@ -162,7 +164,7 @@ for index, row in df_correct_inactive[:3].iterrows():
     image_explanations = mark_boundaries(temp.astype(np.uint8), mask)
 
     axs[2].imshow(image_explanations)
-    axs[2].set_xlabel("Lime explanation")
+    axs[2].set_title("Lime explanation")
 
     # heatmap
     ind = explanation.top_labels[0]
@@ -170,10 +172,10 @@ for index, row in df_correct_inactive[:3].iterrows():
     heatmap = np.vectorize(dict_heatmap.get)(explanation.segments)
     mappable = axs[3].imshow(heatmap, cmap='RdBu', vmin=-heatmap.max(), vmax=heatmap.max())
     plt.colorbar(mappable, ax=axs[3])
-    axs[3].set_xlabel("Importance heatmap", fontsize=10)
+    axs[3].set_title("Importance heatmap", fontsize=10)
 
     # plot gradcam explanation
-    axs[4].set_xlabel("Grad-Cam explanation")
+    axs[4].set_title("Grad-Cam explanation")
 
     # fig.savefig("inactive_explanation_{}".format(row["MolName"]), dpi=600)
     break
