@@ -164,7 +164,7 @@ for index, row in df_correct_active[:3].iterrows():
     plt.subplots_adjust(wspace=0.1, hspace=0)
 
     fig.savefig("active_explanation_{}".format(row["MolName"]), dpi=600)
-    break
+    #break
 
 # produce explanations for active compounds
 for index, row in df_correct_inactive[:3].iterrows():
@@ -236,6 +236,6 @@ for index, row in df_correct_inactive[:3].iterrows():
     plt.subplots_adjust(wspace=0.1, hspace=0)
 
     fig.savefig("inactive_explanation_{}".format(row["MolName"]), dpi=600)
-    break
+    #break
 
 plt.show()
