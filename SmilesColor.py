@@ -29,8 +29,8 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/SmilesColor/"
-modelName = "T3_F64_SmilesColorModel"
-batch_size = 16
+modelName = "T3_F16_SmilesColorModel_Shuffle"
+batch_size = 32
 nb_epoch = 100
 verbose = 1
 
@@ -38,12 +38,12 @@ verbose = 1
 rotation_range = 0
 
 params = {
-    'conv1_units': 64,
-    'conv2_units': 64,
-    'conv3_units': 64,
-    'conv4_units': 64,
-    'conv5_units': 64,
-    'conv6_units': 64,
+    'conv1_units': 16,
+    'conv2_units': 16,
+    'conv3_units': 16,
+    'conv4_units': 16,
+    'conv5_units': 16,
+    'conv6_units': 16,
     'num_block1': 3,
     'num_block2': 3,
     'num_block3': 3,
@@ -93,6 +93,8 @@ X_train, X_valid, y_train, y_valid = train_test_split(
                                         shuffle=True,
                                         stratify=y_train_and_valid)
 
+
+
 # print HivData shapes before oversampling
 print("HivData shapes before oversampling: ")
 print("X_train HivData shape: " + str(X_train.shape))
@@ -109,6 +111,15 @@ y_train = y_train[balanced_indices]
 balanced_indices = cs_data_balance(y_valid.flatten().tolist())
 X_valid = X_valid[balanced_indices]
 y_valid = y_valid[balanced_indices]
+
+# shuffle experiment
+import random
+randomlist = []
+for i in range(len(y_train)):
+    n = random.randint(0,1)
+    randomlist.append(n)
+
+y_train = np.array(randomlist).reshape(-1, 1)
 
 y_train = tf.one_hot(y_train.flatten(), depth=2)
 y_train = tf.cast(y_train, tf.int32)
@@ -170,7 +181,7 @@ else:
 
 
     # Building the model
-    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2, lr=0.00001)
+    model, submodel = cs_setup_cnn(params, inshape=input_shape, classes=2, lr=0.0001)
 
     print(model.summary())
 
