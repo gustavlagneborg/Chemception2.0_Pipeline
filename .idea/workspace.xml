@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec145179-e4ab-45d6-86ee-5f0c2390f7a2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/citation.cff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/auprc.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Preprocessing/ImageCreation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Preprocessing/ImageCreation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SmilesColor.py" beforeDir="false" afterPath="$PROJECT_DIR$/SmilesColor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XAI/XAIScript.py" beforeDir="false" afterPath="$PROJECT_DIR$/XAI/XAIScript.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,7 +23,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Final-branch" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -58,14 +61,14 @@
       <recent name="C:\Repos\Chemception2.0_Pipeline\SavedModels\BestModel" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Repos\Chemception2.0_Pipeline\TransferLearning\SmilesColorLipo\TF_0.5Layers" />
-      <recent name="C:\Repos\Chemception2.0_Pipeline\TransferLearning\SmilesColorLipo\TF_0.25Layer" />
-      <recent name="C:\Repos\Chemception2.0_Pipeline\TransferLearning\SmilesColorLipo\TransferLearning1" />
-      <recent name="C:\Repos\Chemception2.0_Pipeline\TransferLearning\SmilesColorLipo\LipoModel2" />
-      <recent name="C:\Repos\Chemception2.0_Pipeline\TransferLearning\SmilesColorLipo\LipoModel1" />
+      <recent name="C:\Repos\Chemception2.0_Pipeline\SavedModels\SmilesColor\FinalModel" />
+      <recent name="C:\Repos\Chemception2.0_Pipeline\XAI" />
+      <recent name="C:\Repos\Chemception2.0_Pipeline\XAI\inactive" />
+      <recent name="C:\Repos\Chemception2.0_Pipeline\XAI\active" />
+      <recent name="C:\Repos\Chemception2.0_Pipeline\XAI\old" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.MolSmiles">
+  <component name="RunManager" selected="Python.auprc">
     <configuration name="LipoModel" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -88,7 +91,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="MolSmiles" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="MainPreprocessing" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -101,29 +104,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MolSmiles.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Smiles" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="C:\Users\gusta\miniconda3\envs\cheminformatics\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Smiles.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/MainPreprocessing.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -198,6 +179,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="auprc" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\gusta\miniconda3\envs\cheminformatics\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/auprc.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -222,10 +225,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.MolSmiles" />
-        <item itemvalue="Python.Smiles" />
+        <item itemvalue="Python.auprc" />
         <item itemvalue="Python.XAIScript" />
         <item itemvalue="Python.SmilesColor" />
+        <item itemvalue="Python.MainPreprocessing" />
         <item itemvalue="Python.XAIScript (1)" />
       </list>
     </recent_temporary>
@@ -276,6 +279,15 @@
       <workItem from="1648030325945" duration="9759000" />
       <workItem from="1648107394668" duration="9236000" />
       <workItem from="1648193836441" duration="1719000" />
+      <workItem from="1648463973791" duration="1033000" />
+      <workItem from="1648467923731" duration="588000" />
+      <workItem from="1648490132633" duration="1392000" />
+      <workItem from="1648493591015" duration="323000" />
+      <workItem from="1648539304166" duration="516000" />
+      <workItem from="1648547193171" duration="454000" />
+      <workItem from="1648558010729" duration="4935000" />
+      <workItem from="1648629372275" duration="1003000" />
+      <workItem from="1648646364441" duration="1501000" />
     </task>
     <servers />
   </component>
@@ -324,11 +336,6 @@
           <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/SmilesColor.py</url>
-          <line>98</line>
-          <option name="timeStamp" value="53" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Smiles.py</url>
           <line>137</line>
           <option name="timeStamp" value="54" />
@@ -346,16 +353,17 @@
     <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$MolSmiles.coverage" NAME="MolSmiles Coverage Results" MODIFIED="1648194205741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$T1_Smiles_noCV.coverage" NAME="T1_Smiles_noCV Coverage Results" MODIFIED="1647339730962" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$LipoModel.coverage" NAME="LipoModel Coverage Results" MODIFIED="1648031409294" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TransferLearning" />
-    <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$XAIScript.coverage" NAME="XAIScript Coverage Results" MODIFIED="1648193874580" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/XAI" />
+    <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$XAIScript.coverage" NAME="XAIScript Coverage Results" MODIFIED="1648633701775" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/XAI" />
     <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$T1_MolSmiles_noCV.coverage" NAME="T1_MolSmiles_noCV Coverage Results" MODIFIED="1647358351754" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$transferlearningLipo.coverage" NAME="transferlearningLipo Coverage Results" MODIFIED="1648027458787" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/TransferLearning" />
     <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$SmilesColorChars.coverage" NAME="SmilesColorChars Coverage Results" MODIFIED="1647867206842" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$T1_MolSmiles.coverage" NAME="T1_MolSmiles Coverage Results" MODIFIED="1647290054220" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$SmilesColor__1_.coverage" NAME="SmilesColor (1) Coverage Results" MODIFIED="1647862392678" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$T1_SmilesColor_noCV.coverage" NAME="SmilesColor Coverage Results" MODIFIED="1647396784508" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$SmilesColor.coverage" NAME="SmilesColor Coverage Results" MODIFIED="1648111965713" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$auprc.coverage" NAME="auprc Coverage Results" MODIFIED="1648647321792" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$SmilesColor.coverage" NAME="SmilesColor Coverage Results" MODIFIED="1648558718680" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$T1_ChemOriginal.coverage" NAME="T1_ChemOriginal Coverage Results" MODIFIED="1647283514670" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$MainPreprocessing.coverage" NAME="MainPreprocessing Coverage Results" MODIFIED="1647862973768" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$MainPreprocessing.coverage" NAME="MainPreprocessing Coverage Results" MODIFIED="1648558470509" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$testReadChem.coverage" NAME="testReadChem Coverage Results" MODIFIED="1647168844247" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Chemception2_0_Pipeline$Smiles.coverage" NAME="Smiles Coverage Results" MODIFIED="1648194154641" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>

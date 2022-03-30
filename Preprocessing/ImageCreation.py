@@ -93,7 +93,7 @@ def colorSMILES(smi):
     upper = max_nested
     mid = upper + height // 2 
     lower = upper + height
-    max_len = 50 # Number of atoms and "non-singel" bonds 
+    max_len = 60 # Number of atoms and "non-singel" bonds
     lvl = 0
     active_con = [-1] * max_connections
     im_arr = np.ones((height+max_connections+max_nested,
@@ -193,7 +193,7 @@ def SMILESToImage(smi, background=None):
     
     char_width = 6
     height = 17
-    num_chars = 100
+    num_chars = 120
     width = char_width * num_chars
     
     if background is None:
@@ -238,7 +238,7 @@ def generateImageSMILE(path, compoundList, HIV_activity):
     # image setup
     char_width = 6
     height = 17
-    num_chars = 100
+    num_chars = 120
     width = char_width * num_chars
     
     # Counter to make each image name unique since oversampling has created copies of different samples
@@ -290,7 +290,7 @@ def generateImageSMILEColor(path, compoundList, HIV_activity, withChars=True):
 def generateImageSMILETestData(smi):
     char_width = 6
     height = 17
-    num_chars = 100
+    num_chars = 120
     width = char_width * num_chars
 
     img = Image.new("RGB", (width, height), (255, 255, 255))

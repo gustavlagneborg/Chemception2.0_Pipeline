@@ -95,7 +95,7 @@ explainer = lime_image.LimeImageExplainer(random_state=random_state)
 last_conv_layer_name = "conv2d_62"
 
 # produce explanations for active compounds
-for index, row in df_correct_active[:3].iterrows():
+for index, row in df_correct_active[:10].iterrows():
     fig, axs = plt.subplots(6)
     fig.suptitle("Explanation for HIV active compound: " + row["MolName"])
     fig.tight_layout()
@@ -141,19 +141,19 @@ for index, row in df_correct_active[:3].iterrows():
     axs[4].axes.yaxis.set_visible(False)
 
     # plot gradcam explanation
-    image = cv2.resize(row["tensor"], (600, 38))
+    image = cv2.resize(row["tensor"], (720, 38))
     image = image.astype('float32')
     image = np.expand_dims(image, axis=0)
 
     icam = GradCAM(model, row["probability"], last_conv_layer_name)
     heatmap = icam.compute_heatmap(image)
-    heatmap = cv2.resize(heatmap, (600, 38))
+    heatmap = cv2.resize(heatmap, (720, 38))
     axs[5].set_title("Grad-Cam Heatmap")
     axs[5].imshow(heatmap)
     axs[5].axes.yaxis.set_visible(False)
     axs[5].axes.xaxis.set_visible(False)
 
-    image = cv2.resize(row["tensor"], (600, 38))
+    image = cv2.resize(row["tensor"], (720, 38))
     (heatmap, output) = icam.overlay_heatmap(heatmap, image, alpha=0.5)
 
     axs[3].set_title("Grad-Cam Explanation")
@@ -167,7 +167,7 @@ for index, row in df_correct_active[:3].iterrows():
     #break
 
 # produce explanations for active compounds
-for index, row in df_correct_inactive[:3].iterrows():
+for index, row in df_correct_inactive[:10].iterrows():
     fig, axs = plt.subplots(6)
     fig.suptitle("Explanation for HIV inactive compound: " + row["MolName"])
     fig.tight_layout()
@@ -213,19 +213,19 @@ for index, row in df_correct_inactive[:3].iterrows():
     axs[4].axes.yaxis.set_visible(False)
 
     # plot gradcam explanation
-    image = cv2.resize(row["tensor"], (600, 38))
+    image = cv2.resize(row["tensor"], (720, 38))
     image = image.astype('float32')
     image = np.expand_dims(image, axis=0)
 
     icam = GradCAM(model, row["probability"], last_conv_layer_name)
     heatmap = icam.compute_heatmap(image)
-    heatmap = cv2.resize(heatmap, (600, 38))
+    heatmap = cv2.resize(heatmap, (720, 38))
     axs[5].set_title("Grad-Cam Heatmap")
     axs[5].imshow(heatmap)
     axs[5].axes.xaxis.set_visible(False)
     axs[5].axes.yaxis.set_visible(False)
 
-    image = cv2.resize(row["tensor"], (600, 38))
+    image = cv2.resize(row["tensor"], (720, 38))
     (heatmap, output) = icam.overlay_heatmap(heatmap, image, alpha=0.5)
 
     axs[3].set_title("Grad-Cam Explanation")

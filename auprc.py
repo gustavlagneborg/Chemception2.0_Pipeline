@@ -185,7 +185,7 @@ else:
 
     print(model.summary())
 
-    # Setup callbacks
+    """# Setup callbacks
     filecp = path + "_bestweights_trial_" + ".hdf5"
     filecsv = path + "_loss_curve_"  + ".csv"
     callbacks = [TerminateOnNaN(),
@@ -212,15 +212,21 @@ else:
     pickle_out = open(path + modelName + "_History" + ".pickle", "wb")
     pickle.dump(hist, pickle_out)
     pickle_out.close()
+"""
+    # Reload best model & compute results
+    loadPath = "SavedModels/BestModel/"
+    filecp = loadPath + "_bestweights_trial_" + ".hdf5"
+    model.load_weights(filecp)
+    import sklearn.metrics
 
-    with tf.device('/cpu:0'):
-        # Reload best model & compute results
-        model.load_weights(filecp)
-        cs_compute_results(model, classes=2, df_out=cv_results,
-                           train_data=(X_train, y_train),
-                           valid_data=(X_valid, y_valid),
-                           test_data=(X_test, y_test),
-                           filename=path)
+    predicted_probs = model.predict(X_test)
+    auprc = sklearn.metrics.average_precision_score(y_test, predicted_probs)
+    print(auprc)
+    """cs_compute_results(model, classes=2, df_out=cv_results,
+                       train_data=(X_train, y_train),
+                       valid_data=(X_valid, y_valid),
+                       test_data=(X_test, y_test),
+                       filename=path)
 
     # Calculate results for entire CV
     final_mean = cv_results.mean(axis=0)
@@ -231,3 +237,4 @@ else:
     print('*** TRIAL RESULTS: ')
     print('*** PARAMETERS TESTED: ' + str(params))
     print(cv_results)
+"""
