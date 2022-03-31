@@ -28,8 +28,13 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/MolSmiles/"
+<<<<<<< Updated upstream
 modelName = "T2_F64_MolSmiles"
 batch_size = 16
+=======
+modelName = "T1_MolSmiles"
+batch_size = 80
+>>>>>>> Stashed changes
 nb_epoch = 100
 verbose = 1
 
@@ -37,6 +42,7 @@ verbose = 1
 rotation_range = 180
 
 params = {
+<<<<<<< Updated upstream
     'conv1_units': 64,
     'conv2_units': 64,
     'conv3_units': 64,
@@ -46,6 +52,17 @@ params = {
     'num_block1': 2,
     'num_block2': 2,
     'num_block3': 2,
+=======
+    'conv1_units': 32,
+    'conv2_units': 32,
+    'conv3_units': 32,
+    'conv4_units': 32,
+    'conv5_units': 32,
+    'conv6_units': 32,
+    'num_block1': 1,
+    'num_block2': 1,
+    'num_block3': 1,
+>>>>>>> Stashed changes
     'dropval': 0.5,
 }
 
@@ -142,7 +159,7 @@ gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
     try:
         tf.config.experimental.set_virtual_device_configuration(gpus[0], [
-            tf.config.experimental.VirtualDeviceConfiguration(memory_limit=5837)])
+            tf.config.experimental.VirtualDeviceConfiguration(memory_limit=8000)])
     except RuntimeError as e:
         print(e)
 

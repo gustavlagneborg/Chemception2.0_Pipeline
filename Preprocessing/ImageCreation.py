@@ -6,6 +6,8 @@ from PIL import ImageDraw
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
+import rdkit.Chem.Draw.rdMolDraw2D as MD2D
+from cairosvg import svg2png
 
 # --------MolImages--------
 
@@ -43,7 +45,34 @@ def produceMolImages(path, compoundList, HIV_activity):
         Chem.Draw.MolToFile(active, filename, size=(200,150))#, kekulize=True, wedgeBonds=True, imageType=None, fitImage=False, options=None)
     
     print(f"Done producing molImages {HIV_activity} compounds for path: {path}. {counter} images was created")
-    
+
+
+def export_smile_to_img(compoundList, path, HIV_activity):
+    molname = compoundList["MolName"]
+    smi = compoundList["SMILES"]
+    active = HIV_activity
+
+    mol = Chem.MolFromSmiles(smi)
+
+    for r in range(0, 360, 30):
+        drawing = MD2D.MolDraw2DSVG(300, 300)
+        drawing.drawOptions().rotate = r
+        drawing.drawOptions().centreMoleculesBeforeDrawing = True
+        drawing.drawOptions().fixedFontSize = 2
+        drawing.drawOptions().fixedBondLength = 15
+
+        # Testa även att köra med raden nedan om du har tid.
+
+        # drawing.drawOptions().useBWAtomPalette()
+
+        #############
+
+        drawing.DrawMolecule(mol)
+        drawing.FinishDrawing()
+        svg = drawing.GetDrawingText().replace('svg:', '')
+
+        filename = f"{path}{molname}_{r}{active}.png"
+        svg2png(bytestring=svg, write_to=filename)
 
 # Smiles Image setup
 # Colors from https://sciencenotes.org/molecule-atom-colors-cpk-colors/

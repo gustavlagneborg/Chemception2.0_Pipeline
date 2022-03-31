@@ -75,19 +75,29 @@ for fname in os.listdir('HIVImages/MolFromSmilesImages/Train'):
 else:
     print("Starting to produce molecular images!")
     # creating list of RDKit mol objects for inactive and active compounds
-    inactivesList_train = getMolListFromDataFrame(df_inactives_train, "MolName")
+    """inactivesList_train = getMolListFromDataFrame(df_inactives_train, "MolName")
     activesList_train = getMolListFromDataFrame(df_actives_train, "MolName")
 
     inactivesList_test = getMolListFromDataFrame(df_inactives_test, "MolName")
     activesList_test = getMolListFromDataFrame(df_actives_test, "MolName")
 
-    # train images
+
     produceMolImages(path="HIVImages/MolFromSmilesImages/Train/", compoundList=inactivesList_train, HIV_activity="inactive")
     produceMolImages(path="HIVImages/MolFromSmilesImages/Train/", compoundList=activesList_train, HIV_activity="active")
 
-    # test images
     produceMolImages(path="HIVImages/MolFromSmilesImages/Test/", compoundList=inactivesList_test, HIV_activity="inactive")
     produceMolImages(path="HIVImages/MolFromSmilesImages/Test/", compoundList=activesList_test, HIV_activity="active")
+"""
+    # train images
+    df_inactives_train.progress_apply(export_smile_to_img, path="HIVImages/MolFromSmilesImages/Train/", HIV_activity="inactive", axis=1)
+    df_actives_train.progress_apply(export_smile_to_img, path="HIVImages/MolFromSmilesImages/Train/", HIV_activity="active", axis=1)
+
+    # test images
+    df_inactives_test.progress_apply(export_smile_to_img, path="HIVImages/MolFromSmilesImages/Test/", HIV_activity="inactive", axis=1)
+    df_actives_test.progress_apply(export_smile_to_img, path="HIVImages/MolFromSmilesImages/Test/", HIV_activity="active", axis=1)
+
+
+
 
 # --------SmilesImages--------
 # uses smiles to produce images
