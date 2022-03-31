@@ -30,9 +30,12 @@ tf.random.set_seed(
 path = "SavedModels/MolSmiles/"
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 modelName = "T2_F64_MolSmiles"
 batch_size = 16
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 modelName = "T1_MolSmiles"
@@ -66,6 +69,9 @@ params = {
     'num_block2': 1,
     'num_block3': 1,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
