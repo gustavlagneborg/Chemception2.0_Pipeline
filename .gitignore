@@ -18,3 +18,4 @@ SavedModels/*/*
 TransferLearning/SmilesColorLipo/*
 Misc/*
 Preprocessing/__pycache__/ImageCreation.cpython-37.pyc
+.idea/workspace.xml

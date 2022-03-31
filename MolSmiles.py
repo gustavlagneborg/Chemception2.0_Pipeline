@@ -28,37 +28,28 @@ tf.random.set_seed(
 )
 
 path = "SavedModels/MolSmiles/"
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
 modelName = "T2_F64_MolSmiles"
 batch_size = 16
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
 modelName = "T1_MolSmiles"
 batch_size = 80
->>>>>>> Stashed changes
 nb_epoch = 100
 verbose = 1
 
 # change depending on image, 180 for mol images, 0 for others
 rotation_range = 180
 
+path = "SavedModels/MolSmiles/"
+modelName = "T1_Smilesmodel"
+batch_size = 32
+nb_epoch = 100
+verbose = 1
+
+# change depending on image, 180 for mol images, 0 for others
+rotation_range = 0
+
 params = {
-<<<<<<< Updated upstream
-    'conv1_units': 64,
-    'conv2_units': 64,
-    'conv3_units': 64,
-    'conv4_units': 64,
-    'conv5_units': 64,
-    'conv6_units': 64,
-    'num_block1': 2,
-    'num_block2': 2,
-    'num_block3': 2,
-=======
     'conv1_units': 32,
     'conv2_units': 32,
     'conv3_units': 32,
@@ -68,13 +59,6 @@ params = {
     'num_block1': 1,
     'num_block2': 1,
     'num_block3': 1,
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     'dropval': 0.5,
 }
 

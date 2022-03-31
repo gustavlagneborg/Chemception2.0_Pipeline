@@ -54,7 +54,25 @@ def export_smile_to_img(compoundList, path, HIV_activity):
 
     mol = Chem.MolFromSmiles(smi)
 
-    for r in range(0, 360, 30):
+    drawing = MD2D.MolDraw2DSVG(300, 300)
+    drawing.drawOptions().centreMoleculesBeforeDrawing = True
+    drawing.drawOptions().fixedFontSize = 2
+    drawing.drawOptions().fixedBondLength = 15
+
+    # Testa även att köra med raden nedan om du har tid.
+
+    # drawing.drawOptions().useBWAtomPalette()
+
+    #############
+
+    drawing.DrawMolecule(mol)
+    drawing.FinishDrawing()
+    svg = drawing.GetDrawingText().replace('svg:', '')
+
+    filename = f"{path}{molname}_{active}.png"
+    svg2png(bytestring=svg, write_to=filename)
+
+    """for r in range(0, 360, 30):
         drawing = MD2D.MolDraw2DSVG(300, 300)
         drawing.drawOptions().rotate = r
         drawing.drawOptions().centreMoleculesBeforeDrawing = True
@@ -72,7 +90,7 @@ def export_smile_to_img(compoundList, path, HIV_activity):
         svg = drawing.GetDrawingText().replace('svg:', '')
 
         filename = f"{path}{molname}_{r}{active}.png"
-        svg2png(bytestring=svg, write_to=filename)
+        svg2png(bytestring=svg, write_to=filename)"""
 
 # Smiles Image setup
 # Colors from https://sciencenotes.org/molecule-atom-colors-cpk-colors/
